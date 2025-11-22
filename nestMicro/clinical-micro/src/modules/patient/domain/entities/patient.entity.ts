@@ -1,10 +1,17 @@
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity()
 export class Patient {
-    constructor(
-        public readonly id: bigint,
-        public name: string,
-        public lastName: string,
-        public birthDate: Date,
-        public gender: string,
-        public status: string,
-    ) {}
+    @PrimaryGeneratedColumn()
+    id: bigint;
+    @Column({ length: 100 })
+    name: string;
+    @Column({ length: 100 })
+    lastName: string;
+    @Column()
+    birthDate: Date;
+    @Column()
+    gender: string;
+    @Column()
+    status: string;
 }
