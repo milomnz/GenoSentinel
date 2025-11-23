@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class Patient {
     @PrimaryGeneratedColumn()
-    id: bigint;
+    id?: number;
     @Column({ length: 100 })
     name: string;
     @Column({ length: 100 })

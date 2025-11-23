@@ -1,4 +1,4 @@
-import { Patient } from "src/modules/patient/domain/entities/patient.entity";
+import { Patient } from "src/modules/patient/entity/patient.entity";
 import { TumorType } from "src/modules/tumorType/domain/entities/TumorType.entity";
 
 export class ClinicalRecord{

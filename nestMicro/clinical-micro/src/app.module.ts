@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PatientModule } from './modules/patient/patient.module';
-import { Patient } from './modules/patient/domain/entities/patient.entity';
+import { Patient } from './modules/patient/entity/patient.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
