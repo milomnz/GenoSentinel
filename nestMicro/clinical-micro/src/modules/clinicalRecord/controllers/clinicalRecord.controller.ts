@@ -4,11 +4,10 @@ import { ClinicalRecordService } from '../services/clinicalRecord.service';
 import { CreateClinicalRecordDto } from '../dto/create-clinicalRecord';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
 
-@ApiTags('Tipos de Tumor')
+@ApiTags('Reportes Clinicos')
 @Controller('clinical-records')
 export class ClinicalRecordController{
     constructor(private readonly clinicalRecordService: ClinicalRecordService){}
-
 
     @Post()
     @HttpCode(HttpStatus.CREATED)

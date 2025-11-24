@@ -1,14 +1,16 @@
-import { Injectable, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClinicalRecord } from './entities/ClinicalRecord.entity';
 import { ClinicalRecordService } from './services/clinicalRecord.service';
+import { Patient } from '../patient/entity/patient.entity';
+import { ClinicalRecordController } from './controllers/clinicalRecord.controller';
 
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([ClinicalRecord])
+        TypeOrmModule.forFeature([ClinicalRecord, Patient])
     ],
-    controllers: [],
+    controllers: [ClinicalRecordController],
     providers: [ClinicalRecordService],
 })
-export class clinicalRecordModule{}
+export class ClinicalRecordModule{}

@@ -13,6 +13,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { PatientService } from '../service/patient.service';
 import { Patient } from '../entity/patient.entity';
@@ -59,7 +60,7 @@ export class PatientController {
     return this.patientService.create(createPatientDto);
   }
 
-  @Put(':id/name')
+  @Patch(':id/name')
   @ApiOperation({ summary: 'Actualizar el nombre del paciente' })
   @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
   @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente' })
@@ -71,7 +72,7 @@ export class PatientController {
     return this.patientService.updateName(id, updateNameDto.name);
   }
 
-  @Put(':id/status')
+  @Patch(':id/status')
   @ApiOperation({ summary: 'Actualizar el estado del paciente' })
   @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
   @ApiResponse({ status: 200, description: 'Estado actualizado exitosamente' })

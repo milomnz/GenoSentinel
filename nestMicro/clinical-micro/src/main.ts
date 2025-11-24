@@ -13,7 +13,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  const document = SwaggerModule.createDocument(app as any, config);
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app as any, document);
 
   // Global validation pipe config
