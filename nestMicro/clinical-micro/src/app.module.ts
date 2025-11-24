@@ -1,22 +1,27 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { PatientModule } from './modules/patient/patient.module';
 import { Patient } from './modules/patient/entity/patient.entity';
+
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql', 
-      host: 'localhost',
-      port: 3000,
-      username: 'nestDbUser',
-      password: '123456',
-      database: 'nombre_db',
-      entities: [Patient], // Agrega tus entidades aquí
-      synchronize: false, // Solo para desarrollo (crea tablas automáticamente)
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
-    PatientModule
+
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [Patient],
+      synchronize: false,
+    }),
+
+    PatientModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

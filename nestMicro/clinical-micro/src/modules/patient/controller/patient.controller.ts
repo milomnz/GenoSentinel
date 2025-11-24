@@ -1,3 +1,7 @@
+/**
+ * @author milomnz
+ * Endpoint controller for patient entity
+ */
 import {
   Controller,
   Get,

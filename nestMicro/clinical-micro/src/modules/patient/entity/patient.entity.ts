@@ -1,17 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { ClinicalRecord } from '../../clinicalRecord/entities/ClinicalRecord.entity';
 
 @Entity()
 export class Patient {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment', { type: 'bigint' })
     id?: number;
-    @Column({ length: 100 })
-    name: string;
-    @Column({ length: 100 })
+
+    @Column({ length: 100, nullable: false })
+    firstName: string;
+
+    @Column({ length: 100, nullable: false })
     lastName: string;
-    @Column()
+
+    @Column({ type: 'date', nullable: false })
     birthDate: Date;
-    @Column()
+
+    @Column({ length: 20, nullable: true })
     gender: string;
-    @Column()
+
+    @Column({ length: 20, nullable: true })
     status: string;
+
+    //@OneToMany(() => ClinicalRecord, clinicalRecord => clinicalRecord.patient)
+    clinicalRecords?: ClinicalRecord[];
 }

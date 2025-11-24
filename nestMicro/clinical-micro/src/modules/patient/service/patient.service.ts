@@ -1,3 +1,9 @@
+/**
+ * 
+ * @author milomnz
+ * Businnes logic for patient entity
+ * 
+ */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -25,7 +31,7 @@ export class PatientService {
         if (!exists) {
             throw new Error('Paciente no encontrado');
         }
-        await this.patientRepository.update(Number(id), { name }).then(() => { });
+        await this.patientRepository.update(Number(id), {  }).then(() => { });
     }
 
     async updateStatus(id: number, status: string): Promise<void> {
