@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Patient } from './domain/entities/patient.entity';
-import { PatientService } from './application/services/patient.service';
+import { PatientService } from './patient.service';
 
 @Module({
     imports: [
