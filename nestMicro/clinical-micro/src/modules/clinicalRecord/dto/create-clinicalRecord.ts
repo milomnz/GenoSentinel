@@ -12,17 +12,15 @@ export class CreateClinicalRecordDto{
   
   @IsNotEmpty()
   @IsNumberString()
-  idPatient: string;
+  idPatient: number;
 
 
   @ApiProperty({
     description:'ID del tipo de tumor (Foreign Key)',
-    example: ['3', '4']
+    example: [3, 4]
   })
   @IsNotEmpty()
-  @IsArray()
-  @IsNumberString({}, {each:true})
-  idTumorTypes: string[];
+  idTumorTypes: number;
 
 
   @ApiProperty({

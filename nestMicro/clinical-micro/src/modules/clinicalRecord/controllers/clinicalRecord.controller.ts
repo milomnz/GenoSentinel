@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, HttpCode, HttpStatus} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, HttpCode, HttpStatus, Patch} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ClinicalRecordService } from '../services/clinicalRecord.service';
 import { CreateClinicalRecordDto } from '../dto/create-clinicalRecord';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
+import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';
 
 @ApiTags('Reportes Clinicos')
 @Controller('clinical-records')
@@ -100,5 +101,22 @@ export class ClinicalRecordController{
     })
     delete(@Param('id', ParseIntPipe) id: number): Promise<void>{
         return this.clinicalRecordService.delete(id);
+    }
+    @ApiOperation({
+        summary: 'Actualiza parcialmente un registro clinico',
+        description: 'Permite actualizar uno o mas campos de un registro clinico existente sin afectar los demas campos'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Registro clinico actualizado exitosamente',
+        type: ClinicalRecord
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Registro clinico no encontrado'
+    })
+    @Patch('update/:id')
+    updatePartial(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateClinicalRecordDto): Promise<void> {
+        return this.clinicalRecordService.updatePartial(id, updateDto);
     }
 }

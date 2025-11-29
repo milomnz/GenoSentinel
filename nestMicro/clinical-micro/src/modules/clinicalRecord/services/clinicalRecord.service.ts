@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
 import { CreateClinicalRecordDto } from '../dto/create-clinicalRecord';
+import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';
 import { Patient } from '../../patient/entity/patient.entity';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
-import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';
 
 @Injectable()
 export class ClinicalRecordService {
@@ -18,57 +18,54 @@ export class ClinicalRecordService {
 
     async findAll(): Promise<ClinicalRecord[]> {
         return this.clinicalRecordRepository.find({
-            relations: ['idPatient', 'tumorType']
+            // Nota: usamos el nombre de la propiedad en la entidad ("patient", "tumorType")
+            relations: ['patient', 'tumorType'] 
         });
     }
 
     async findById(id: number): Promise<ClinicalRecord> {
         const record = await this.clinicalRecordRepository.findOne({
             where: { id },
-            relations: ['idPatient', 'tumorType']
+            relations: ['patient', 'tumorType']
         });
         if (!record) {
-            throw new NotFoundException('Clinical Record with ID ${id} not found');
+            // Uso de backticks (`) para interpolación correcta
+            throw new NotFoundException(`Clinical Record with ID ${id} not found`);
         }
         return record;
     }
 
-
     async create(dto: CreateClinicalRecordDto): Promise<ClinicalRecord> {
-        const tumorTypeEntities = dto.idTumorTypes.map(id => ({ id: Number(id) } as TumorType));
+        // 1. Buscamos el paciente
+        const patient = await this.patientRepository.findOneBy({ id: dto.idPatient });
+        if (!patient) {
+            throw new NotFoundException(`Patient with ID ${dto.idPatient} not found`);
+        }
+
+        // 2. Creamos la entidad
+        // Asumimos que el DTO ahora tiene un campo "idTumorType" (singular, number)
         const newRecord = this.clinicalRecordRepository.create({
-            idPatient: { id: Number(dto.idPatient) } as Patient,
-            tumorTypes: tumorTypeEntities,
+            patient: patient,
+            tumorType: { id: dto.idTumorTypes } as TumorType,
             diagnosticDate: dto.diagnosticDate,
             stage: dto.stage,
-            treatmentProtocol: dto.treatmentProtocol,
+            treatmentProtocol: dto.treatmentProtocol
         });
+
         return this.clinicalRecordRepository.save(newRecord);
     }
 
-    async updatePartial(id: number, updateDto: UpdateClinicalRecordDto): Promise<ClinicalRecord> {
-        const record = await this.clinicalRecordRepository.findOneBy({ id });
-        if (!record) {
-            throw new NotFoundException('Clinical Record with ID ${id} not found');
-        }
-
-        const updateFields: any = {};
-
-        if (updateDto.idPatient) {
-            updateFields.idPatient = { id: Number(updateDto.idPatient) };
-        }
-
-        if (updateDto.idTumorTypes && Array.isArray(updateDto.idTumorTypes)) {
-            updateFields.tumorTypes = updateDto.idTumorTypes.map(id => ({ id: Number(id) } as TumorType));
-        }
-
-        Object.assign(updateFields, updateDto);
-
-        await this.clinicalRecordRepository.update(id, updateFields);
-        return this.findById(id);
-
+    async updatePartial(id: number, updateDto: UpdateClinicalRecordDto): Promise<void> {
+    const exists = await this.clinicalRecordRepository.findOneBy({ id });
+    if (!exists) {
+      throw new NotFoundException(`Clinical Record with ID ${id} not found`);
     }
-
+    const { stage, treatmentProtocol } = updateDto;
+    await this.clinicalRecordRepository.update(id, { 
+        stage, 
+        treatmentProtocol 
+    });
+  }
 
     async delete(id: number): Promise<void> {
         const result = await this.clinicalRecordRepository.delete(id);
@@ -76,7 +73,4 @@ export class ClinicalRecordService {
             throw new NotFoundException(`Clinical Record with ID ${id} not found`);
         }
     }
-
-
-
 }

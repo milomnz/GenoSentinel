@@ -60,7 +60,7 @@ export class PatientController {
     return this.patientService.create(createPatientDto);
   }
 
-  @Patch(':id/name')
+  @Patch(':updatename/:id')
   @ApiOperation({ summary: 'Actualizar el nombre del paciente' })
   @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
   @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente' })
@@ -72,7 +72,7 @@ export class PatientController {
     return this.patientService.updateName(id, updateNameDto.name);
   }
 
-  @Patch(':id/status')
+  @Patch(':updatestatus/:id')
   @ApiOperation({ summary: 'Actualizar el estado del paciente' })
   @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
   @ApiResponse({ status: 200, description: 'Estado actualizado exitosamente' })

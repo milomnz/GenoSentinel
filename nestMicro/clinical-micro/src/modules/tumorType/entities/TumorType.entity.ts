@@ -11,14 +11,4 @@ export class TumorType{
 
     @Column({name: 'systemAffected', length:70 })
     systemAffected: string;
-
-    @ManyToMany (()=> ClinicalRecord,(record) => record.tumorTypes)
-
-    @JoinTable({
-        name: 'tumor_type_clinical_record',
-        joinColumn: {name: 'id_tumor_type', referencedColumnName: 'id'},
-        inverseJoinColumn: {name: 'id_clinical_record', referencedColumnName: 'id'},
-    })
-
-    clinicalRecords: ClinicalRecord[];
 }

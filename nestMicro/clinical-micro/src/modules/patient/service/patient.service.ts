@@ -26,12 +26,12 @@ export class PatientService {
         return this.patientRepository.save(patient);
     }
 
-    async updateName(id: number, name: string): Promise<void> {
+    async updateName(id: number, firstName: string): Promise<void> {
         const exists = await this.patientRepository.findOneBy({ id });
         if (!exists) {
             throw new Error('Paciente no encontrado');
         }
-        await this.patientRepository.update(Number(id), {  }).then(() => { });
+        await this.patientRepository.update(Number(id), { firstName }).then(() => { });
     }
 
     async updateStatus(id: number, status: string): Promise<void> {
