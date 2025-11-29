@@ -1,9 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, OneToOne} from 'typeorm';
 import { ClinicalRecord } from 'src/modules/clinicalRecord/entities/ClinicalRecord.entity';
 
 @Entity('tumor_type')
 export class TumorType{
-    @PrimaryGeneratedColumn('increment')
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column({length: 50, unique: true })
@@ -12,13 +12,6 @@ export class TumorType{
     @Column({name: 'systemAffected', length:70 })
     systemAffected: string;
 
-    @ManyToMany (()=> ClinicalRecord,(record) => record.tumorTypes)
-
-    @JoinTable({
-        name: 'tumor_type_clinical_record',
-        joinColumn: {name: 'id_tumor_type', referencedColumnName: 'id'},
-        inverseJoinColumn: {name: 'id_clinical_record', referencedColumnName: 'id'},
-    })
-
-    clinicalRecords: ClinicalRecord[];
+    @OneToOne (()=> ClinicalRecord,(record) => record.tumorTypes)
+    clinicalRecords: ClinicalRecord;
 }

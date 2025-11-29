@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
-import { CreateClinicalRecordDto } from '../dto/create-clinicalRecord';
+import { CreateClinicalRecordDto } from '../dto/createandUpdate-clinicalRecord';
 import { Patient } from '../../patient/entity/patient.entity';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
 import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';

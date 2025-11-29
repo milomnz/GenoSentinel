@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TumorType } from '../entities/TumorType.entity';
-import { CreateTumorTypeDto } from '../dto/create-tumorType';
-import { UpdateTumorTypeDto } from '../dto/update-tumorType';
+import { CreateTumorTypeDto } from '../dto/createandUpdate-tumorType';
+
 
 @Injectable()
 export class TumorTypeService {

@@ -16,7 +16,7 @@ export class ClinicalRecord{
     //Relacion con TumorType
     @ManyToMany(() => TumorType, (tumorType)=> tumorType.clinicalRecords)
     
-    tumorTypes: TumorType[];
+    tumorTypes: TumorType;
 
     @Column({type:'date', name: 'diagnostic_date'})
     diagnosticDate: Date;

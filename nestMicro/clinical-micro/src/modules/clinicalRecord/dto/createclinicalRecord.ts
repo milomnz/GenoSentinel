@@ -1,9 +1,10 @@
 
 import { IsString, IsNotEmpty, IsNumberString, IsDateString, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
 
 
-export class CreateClinicalRecordDto{
+export class CreatClinicalRecordDto{
  
   @ApiProperty({
     description:'ID del paciente (Foreign Key)',
@@ -12,7 +13,7 @@ export class CreateClinicalRecordDto{
   
   @IsNotEmpty()
   @IsNumberString()
-  idPatient: string;
+  idPatient?:number;
 
 
   @ApiProperty({
@@ -22,7 +23,7 @@ export class CreateClinicalRecordDto{
   @IsNotEmpty()
   @IsArray()
   @IsNumberString({}, {each:true})
-  idTumorTypes: string[];
+  idTumorTypes: TumorType;
 
 
   @ApiProperty({

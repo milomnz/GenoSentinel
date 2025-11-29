@@ -1,10 +1,14 @@
 import {Controller, Get, Post, Body, Param, ParseIntPipe, HttpCode, HttpStatus, Patch, Delete} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiOkResponse } from '@nestjs/swagger';
 import { TumorTypeService } from '../services/tumorType.service';
-import { CreateTumorTypeDto } from 'src/modules/tumorType/dto/create-tumorType';
+import { CreateTumorTypeDto } from 'src/modules/tumorType/dto/createandUpdate-tumorType';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
-import { stat } from 'fs';
 import { UpdateTumorTypeDto } from '../dto/update-tumorType';
+
+/**
+ * @author mendez
+ * Endpoint controller for tumorType entity
+ */
 
 @ApiTags('Tipos de Tumor')
 @Controller('tumor-types')
