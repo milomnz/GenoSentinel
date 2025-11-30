@@ -1,0 +1,29 @@
+package com.geno.springGateway.patient.application.dto;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import java.util.Date;
+
+
+/**
+ * DTO de salida que representa un paciente con su ID.
+ * Utilizado para mapear la respuesta (cuerpo 200) del microservicio NestJS
+ * hacia el cliente del Gateway.
+ */
+
+@Data
+@Schema(description = "DTO de salida con los datos completos del paciente")
+
+public class PatientOutDto {
+    @Schema(description = "Identificador único del paciente.", example = "1")
+    private Long id;
+    @Schema(description = "Nombre(s) del paciente.", example = "Camy")
+    private String firstName;
+    @Schema(description = "Apellido(s) del paciente.", example = "Mendez")
+    private String lastName;
+    @Schema(description = "Fecha de nacimiento (formato yyyy-MM-dd).", example = "2000-01-01")
+    private Date birthDate;
+    @Schema(description = "Género del paciente.", example = "Femenino")
+    private String gender;
+    @Schema(description = "Estado actual del paciente.", example = "Activo")
+    private String status;
+}
