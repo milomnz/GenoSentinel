@@ -7,6 +7,10 @@ import { Patient } from '../../patient/entity/patient.entity';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
 import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';
 
+/**
+ * @author mendez
+ * Endpoint controller for clinicalRecord entity
+ */
 @Injectable()
 export class ClinicalRecordService {
     constructor(
