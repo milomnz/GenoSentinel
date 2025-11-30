@@ -1,6 +1,7 @@
 
 import { IsString, IsNotEmpty, IsNumberString, IsDateString, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
 
 
 export class CreateClinicalRecordDto{
@@ -12,7 +13,7 @@ export class CreateClinicalRecordDto{
   
   @IsNotEmpty()
   @IsNumberString()
-  idPatient: number;
+  idPatient?:number;
 
 
   @ApiProperty({
@@ -20,7 +21,9 @@ export class CreateClinicalRecordDto{
     example: [3, 4]
   })
   @IsNotEmpty()
-  idTumorTypes: number;
+  @IsArray()
+  @IsNumberString({}, {each:true})
+  idTumorTypes: TumorType;
 
 
   @ApiProperty({

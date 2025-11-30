@@ -38,7 +38,7 @@ export class PatientService {
         if (!exists) {
             throw new Error('Paciente no encontrado');
         }
-        await this.patientRepository.update(Number(id), { firstName }).then(() => { });
+        await this.patientRepository.update(id, { firstName }).then(() => { });
     }
 
     async updateStatus(id: number, status: string): Promise<void> {
@@ -46,7 +46,7 @@ export class PatientService {
         if (!exists) {
             throw new Error('Paciente no encontrado');
         }
-        await this.patientRepository.update(Number(id), { status }).then(() => { });
+        await this.patientRepository.update(id, { status }).then(() => { });
     }
 
     async delete(id: number): Promise<void> {
@@ -54,6 +54,6 @@ export class PatientService {
         if (!exists) {
             throw new Error('Paciente no encontrado');
         }
-        await this.patientRepository.delete(Number(id));
+        await this.patientRepository.delete(id);
     }
 }

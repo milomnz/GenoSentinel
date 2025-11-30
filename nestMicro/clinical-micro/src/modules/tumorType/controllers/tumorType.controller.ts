@@ -1,10 +1,16 @@
-import {Controller, Get, Post, Body, Param, ParseIntPipe, HttpCode, HttpStatus} from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, ParseIntPipe, HttpCode, HttpStatus, Patch, Delete} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiOkResponse } from '@nestjs/swagger';
 import { TumorTypeService } from '../services/tumorType.service';
-import { CreateTumorTypeDto } from 'src/modules/tumorType/dto/create-tumorType';
+import { CreateTumorTypeDto } from 'src/modules/tumorType/dto/createandUpdate-tumorType';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
-import { stat } from 'fs';
+import { UpdateTumorTypeDto } from '../dto/update-tumorType';
 
+/**
+ * @author mendez
+ * Endpoint controller for tumorType entity
+ */
+
+@ApiTags('Tipos de Tumor')
 @Controller('tumor-types')
 export class TumorTypeController{
     constructor(private readonly tumorTypeService: TumorTypeService){}
@@ -64,6 +70,57 @@ export class TumorTypeController{
     })
     findById(@Param('id', ParseIntPipe) id: number): Promise<TumorType>{
         return this.tumorTypeService.findById(id);
+    }
+
+    @Patch(':id')
+    @ApiOperation({
+        summary: 'Actualizacion parcial de un tipo de tumor',
+        description: 'Actualiza el nombre o el sistema afectado de un tipo de tumor existente.'
+    })
+
+    @ApiParam({
+        name: 'id',
+        description: 'ID numerico del tipo de tumor',
+        type:Number
+    })
+
+    @ApiResponse({
+        status:200,
+        description: 'Tipo de tumor actualizado exitosamente',
+        type: TumorType
+    })
+
+    @ApiResponse({
+        status:404,
+        description: 'Tipo de tumor no encontrado'
+    })
+
+    updatePartial(
+        @Param('id', ParseIntPipe) id:number,
+        @Body()updateDto: UpdateTumorTypeDto): Promise<TumorType>{
+            return this.tumorTypeService.updatePartial(id, updateDto);
+        
+    }
+
+    @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({
+        summary: 'Elimina un tipo de tumor',
+        description: 'Elimina permanentemente un tipo de tumor por su ID'
+    })
+
+    @ApiParam({
+        name: 'id',
+        description: 'ID numerico del tipo de tumor a eliminar',
+        type:Number
+    })
+
+    @ApiResponse({
+        status: 204,
+        description: 'Tipo de tumor no encontrado'
+    })
+    delete(@Param('id', ParseIntPipe) id: number): Promise<void>{
+        return this.tumorTypeService.delete(id);
     }
     
 }

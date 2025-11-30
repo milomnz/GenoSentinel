@@ -2,11 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
-import { CreateClinicalRecordDto } from '../dto/create-clinicalRecord';
+import { CreateClinicalRecordDto } from '../dto/createclinicalRecord.dto';
 import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';
 import { Patient } from '../../patient/entity/patient.entity';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
 
+/**
+ * @author mendez
+ * Endpoint controller for clinicalRecord entity
+ */
 @Injectable()
 export class ClinicalRecordService {
     constructor(
@@ -46,7 +50,7 @@ export class ClinicalRecordService {
         // Asumimos que el DTO ahora tiene un campo "idTumorType" (singular, number)
         const newRecord = this.clinicalRecordRepository.create({
             patient: patient,
-            tumorType: { id: dto.idTumorTypes } as TumorType,
+            tumorType: dto.idTumorTypes,
             diagnosticDate: dto.diagnosticDate,
             stage: dto.stage,
             treatmentProtocol: dto.treatmentProtocol
