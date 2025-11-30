@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Patient } from '../entity/patient.entity';
+import { NotFoundException } from '@nestjs/common';
 @Injectable()
 export class PatientService {
     constructor(
@@ -18,20 +19,26 @@ export class PatientService {
     findAll(): Promise<Patient[]> {
         return this.patientRepository.find();
     }
-    findById(id: number): Promise<Patient | null> {
-        return this.patientRepository.findOneBy({ id });
+    async findById(id: number): Promise<Patient> {
+    const patient = await this.patientRepository.findOneBy({ id });
+
+    if (!patient) {
+      throw new NotFoundException(`Patient with ID ${id} not found`);
+        }
+    return patient;
+
     }
 
     create(patient: Patient): Promise<Patient> {
         return this.patientRepository.save(patient);
     }
 
-    async updateName(id: number, name: string): Promise<void> {
+    async updateName(id: number, firstName: string): Promise<void> {
         const exists = await this.patientRepository.findOneBy({ id });
         if (!exists) {
             throw new Error('Paciente no encontrado');
         }
-        await this.patientRepository.update(Number(id), {  }).then(() => { });
+        await this.patientRepository.update(Number(id), { firstName }).then(() => { });
     }
 
     async updateStatus(id: number, status: string): Promise<void> {
