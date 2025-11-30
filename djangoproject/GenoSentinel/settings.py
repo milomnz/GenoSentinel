@@ -41,7 +41,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'genosentinelapp',
+    'drf_spectacular',
 ]
+
+REST_FRAMEWORK = {
+    # Le decimos a DRF que use spectacular para generar el esquema
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Configuración básica de la documentación
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Gene API',
+    'DESCRIPTION': 'API para la gestión de Genes',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # Opcional: Para que se vea bonito en la UI
+    'COMPONENT_SPLIT_REQUEST': True 
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -5,3 +5,9 @@ class GeneticVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = GeneticVariant
         fields = '__all__'
+
+
+class GeneticVariantPatchDtoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GeneticVariant
+        fields = ['impact']

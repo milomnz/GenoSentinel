@@ -1,26 +1,36 @@
-from ..services.patient_service import PatientService
-from ..exceptions.patient_exceptions import (
-    PatientNotFoundException,
-    PatientServiceUnavailableException
-)
+# validators/patient_validator.py
+import logging
+
 from rest_framework import serializers
+from ..services.patient_service import PatientService
+from ..exceptions.patient_exceptions import PatientServiceUnavailableException
 
-# .. imports ..
+# Logger para este módulo
+logger = logging.getLogger(__name__)
 
-# Instanciamos el servicio UNA VEZ a nivel de módulo si quisiéramos usar
-# caché en memoria simple, pero con el cambio a django.core.cache, 
-# instanciarlo adentro está bien.
-patient_service = PatientService() 
+def validate_patient_exists(patient_id):
+    """
+    Validador independiente.
+    """
+    # 1. Debug: registrar para asegurar que DRF está llamando a la función
+    logger.debug("Validando paciente ID: %s", patient_id)
+    
+    service = PatientService()
 
-def validate_patient_exists(patient_id: int):
     try:
-        # Usamos la instancia global
-        patient_service.validate_exists(patient_id)
-        return patient_id
-    except PatientNotFoundException:
-        raise serializers.ValidationError(f"El paciente {patient_id} no existe.")
+        exists = service.exists(patient_id)
+        
+        # 2. Debug: Ver qué responde el servicio realmente
+        logger.debug("Respuesta del servicio para %s: %s", patient_id, exists)
+
+        if not exists:
+            raise serializers.ValidationError(
+                f"El paciente con ID {patient_id} no existe."
+            )
+            
     except PatientServiceUnavailableException:
-        # Nota: Esto devolverá un 400 Bad Request al cliente.
         raise serializers.ValidationError(
-            "No se pudo validar el paciente en este momento. Intente más tarde."
+            "No se pudo validar el paciente: Servicio externo no disponible."
         )
+
+    return patient_id
