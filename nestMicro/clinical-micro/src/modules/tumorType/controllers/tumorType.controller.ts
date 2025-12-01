@@ -65,5 +65,59 @@ export class TumorTypeController{
     findById(@Param('id', ParseIntPipe) id: number): Promise<TumorType>{
         return this.tumorTypeService.findById(id);
     }
+<<<<<<< Updated upstream
+=======
+
+    @Patch(':id')
+    @ApiOperation({
+        summary: 'Actualizacion parcial de un tipo de tumor',
+        description: 'Actualiza el nombre o el sistema afectado de un tipo de tumor existente.'
+    })
+
+    @ApiParam({
+        name: 'id del tipo de tumor y DTO con los campos a actualizar',
+        description: 'ID numerico del tipo de tumor',
+        type: UpdateTumorTypeDto
+    })
+
+    @ApiResponse({
+        status:200,
+        description: 'Tipo de tumor actualizado exitosamente',
+        type: TumorType
+    })
+
+    @ApiResponse({
+        status:404,
+        description: 'Tipo de tumor no encontrado'
+    })
+
+    updatePartial(
+        @Param('id', ParseIntPipe) id:number,
+        @Body()updateDto: UpdateTumorTypeDto): Promise<TumorType>{
+            return this.tumorTypeService.updatePartial(id, updateDto);
+        
+    }
+
+    @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({
+        summary: 'Elimina un tipo de tumor',
+        description: 'Elimina permanentemente un tipo de tumor por su ID'
+    })
+
+    @ApiParam({
+        name: 'id',
+        description: 'ID numerico del tipo de tumor a eliminar',
+        type:Number
+    })
+
+    @ApiResponse({
+        status: 204,
+        description: 'Tipo de tumor no encontrado'
+    })
+    delete(@Param('id', ParseIntPipe) id: number): Promise<void>{
+        return this.tumorTypeService.delete(id);
+    }
+>>>>>>> Stashed changes
     
 }

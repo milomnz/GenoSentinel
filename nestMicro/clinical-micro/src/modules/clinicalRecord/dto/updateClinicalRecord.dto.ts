@@ -1,5 +1,5 @@
 
-import { IsString, IsNotEmpty, IsNumberString, IsDateString, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 export class UpdateClinicalRecordDto {
     @IsString()
     @IsNotEmpty()

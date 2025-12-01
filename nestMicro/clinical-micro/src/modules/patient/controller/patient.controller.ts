@@ -21,6 +21,10 @@ import { CreatePatientDto } from '../dto/create-patient.dto';
 import { UpdatePatientNameDto } from '../dto/update-patient-name.dto';
 import { UpdatePatientStatusDto } from '../dto/update-patient-status.dto';
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { CreatePatientDto } from '../dto/createPatient.dto';
+import { UpdatePatientNameDto } from '../dto/updatePatientName.dto';
+import { UpdatePatientStatusDto } from '../dto/updatePatientStatus.dto';
+
 
 @ApiTags('patients')
 @Controller('patients')
@@ -60,28 +64,37 @@ export class PatientController {
     return this.patientService.create(createPatientDto);
   }
 
-  @Patch(':updatename/:id')
+  @Patch('updatename/:id')
   @ApiOperation({ summary: 'Actualizar el nombre del paciente' })
-  @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
-  @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente' })
+  @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente', type : Patient})
   @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
   updateName(
     @Param('id', ParseIntPipe) id: number,
+<<<<<<< Updated upstream
     @Body() updateNameDto: UpdatePatientNameDto,
   ): Promise<void> {
     return this.patientService.updateName(id, updateNameDto.name);
+=======
+    @Body() UpdatePatientNameDto: UpdatePatientNameDto,
+  ): Promise<void> {
+    return this.patientService.updateName(id , UpdatePatientNameDto);
+>>>>>>> Stashed changes
   }
 
-  @Patch(':updatestatus/:id')
+  @Patch('updatestatus/:id')
   @ApiOperation({ summary: 'Actualizar el estado del paciente' })
-  @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
-  @ApiResponse({ status: 200, description: 'Estado actualizado exitosamente' })
   @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
+<<<<<<< Updated upstream
     @Body() updateStatusDto: UpdatePatientStatusDto,
   ): Promise<void> {
     return this.patientService.updateStatus(id, updateStatusDto.status);
+=======
+    @Body() UpdatePatientStatusDto: UpdatePatientStatusDto,
+  ): Promise<void> {
+    return this.patientService.updateStatus(id ,UpdatePatientStatusDto);
+>>>>>>> Stashed changes
   }
 
   @Delete(':id')

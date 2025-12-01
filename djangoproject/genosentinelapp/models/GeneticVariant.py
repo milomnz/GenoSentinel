@@ -16,8 +16,8 @@ class GeneticVariant(models.Model):
         db_column='geneId'
     )
     position = models.BigIntegerField()
-    reference_base = models.CharField(max_length=10, db_column='referenceBase')
-    alternate_base = models.CharField(max_length=10, db_column='alternateBase')
+    reference_base = models.CharField(max_length=1, db_column='referenceBase')
+    alternate_base = models.CharField(max_length=1, db_column='alternateBase')
     impact = models.CharField(max_length=50)
     
     class Meta:
