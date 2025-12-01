@@ -25,8 +25,8 @@ public class ClinicalRecordService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${nest.service.url}/clinical-records")
-    private String nestUrl;
+    @Value("${clinicalrecord.service.base-url}")
+    private String clinicalUrl;
 
     private HttpHeaders getCustomHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -40,7 +40,7 @@ public class ClinicalRecordService {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<List<ClinicalRecordOutDto>>> response = restTemplate.exchange(
-                nestUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
+                clinicalUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -49,7 +49,7 @@ public class ClinicalRecordService {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
+                clinicalUrl + "/" + id, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -58,7 +58,7 @@ public class ClinicalRecordService {
         HttpEntity<ClinicalRecordInDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> response = restTemplate.exchange(
-                nestUrl, HttpMethod.POST, request, new ParameterizedTypeReference<>() {}
+                clinicalUrl, HttpMethod.POST, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -66,7 +66,7 @@ public class ClinicalRecordService {
         HttpEntity<UpdateClinicalRecordStageDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
+                clinicalUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -75,7 +75,7 @@ public class ClinicalRecordService {
         HttpEntity<UpdateClinicalRecordTreatmentProtocolDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
+                clinicalUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -84,7 +84,7 @@ public class ClinicalRecordService {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.DELETE, entity, Void.class
+                clinicalUrl + "/" + id, HttpMethod.DELETE, entity, Void.class
         );
     }
 }

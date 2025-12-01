@@ -1,6 +1,9 @@
 package com.geno.springGateway.clinicalRecord.application.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +13,8 @@ import java.util.List;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "DTO de entrada para crear/actualizar una Historia Clínica")
 public class ClinicalRecordInDto {
 

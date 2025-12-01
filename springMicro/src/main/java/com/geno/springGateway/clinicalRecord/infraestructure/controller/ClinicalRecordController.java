@@ -13,14 +13,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 /**
  * @author mendez
  */
 @RestController
-@RequestMapping("/api/v1/clinical-records")//Modificarlo
+@RequestMapping("/clinical-records")
 @RequiredArgsConstructor
 @Tag(name = "Historias Clínicas", description = "Operaciones CRUD sobre Historias Clínicas (Proxy a NestJS)")
 public class ClinicalRecordController {
@@ -47,9 +50,15 @@ public class ClinicalRecordController {
     @ApiResponse(responseCode = "201", description = "Historia Clínica creada exitosamente.")
     @ApiResponse(responseCode = "400", description = "Solicitud inválida (error de validación en los datos de entrada, ej. ID de paciente o tumor vacío).")
     @PostMapping
-    public ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> create(@RequestBody ClinicalRecordInDto dto) {
+    public ResponseEntity<ClinicalRecordOutDto> create(@RequestBody ClinicalRecordInDto dto, UriComponentsBuilder ucb) {
         ClinicalRecordOutDto created = clinicalRecordService.create(dto);
-        return new ResponseEntity<>(new ApiRestTemplateResponse<>("Created", "Historia Clínica creada", created), HttpStatus.CREATED);
+        URI locationUri = ucb.path("/clinical-records/{id}")
+                .buildAndExpand(created.getId()) // Asumiendo que getId() existe
+                .toUri();
+
+        return ResponseEntity
+                .created(locationUri)
+                .body(created);
     }
     @Operation(summary = "Actualizar Etapa Clínica", description = "Actualiza solo el campo 'stage'.")
     @ApiResponse(responseCode = "200", description = "Etapa Clínica actualizada con éxito.")
@@ -65,11 +74,10 @@ public class ClinicalRecordController {
     }
 
     @Operation(summary = "Actualizar Protocolo de Tratamiento", description = "Actualiza solo el campo 'treatmentProtocol'.")
-    @ApiResponses({
-            @ApiRestTemplateResponse(responseCode = "200", description = "Protocolo de tratamiento actualizado con éxito."),
-            @ApiRestTemplateResponse(responseCode = "400", description = "Solicitud inválida (el campo está vacío o es nulo)."),
-            @ApiRestTemplateResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
-    })
+
+    @ApiResponse(responseCode = "200", description = "Protocolo de tratamiento actualizado con éxito.")
+    @ApiResponse(responseCode = "400", description = "Solicitud inválida (el campo está vacío o es nulo).")
+    @ApiResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
     @PatchMapping("/{id}/treatment-protocol")
     public ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> patchTreatment(
             @PathVariable Long id,
@@ -80,10 +88,9 @@ public class ClinicalRecordController {
     }
 
     @Operation(summary = "Eliminar", description = "Elimina una Historia Clínica por su ID.")
-    @ApiResponses({
-            @ApiRestTemplateResponse(responseCode = "200", description = "Historia Clínica eliminada con éxito."),
-            @ApiRestTemplateResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
-    })
+    @ApiResponse(responseCode = "200", description = "Historia Clínica eliminada con éxito.")
+    @ApiResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiRestTemplateResponse<Void>> delete(@PathVariable Long id) {
         clinicalRecordService.delete(id);

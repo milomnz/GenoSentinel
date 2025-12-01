@@ -12,13 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 import java.util.List;
 
 /**
  * @author mendez
  */
 @RestController
-@RequestMapping("/api/v1/patients") // Modificar
+@RequestMapping("/patients")
 @RequiredArgsConstructor
 @Tag(name = "Pacientes", description = "Operaciones CRUD sobre la entidad Paciente (Proxy a NestJS)")
 public class PatientController {
@@ -44,9 +46,17 @@ public class PatientController {
     @ApiResponse(responseCode = "201", description = "Paciente creado exitosamente.")
     @ApiResponse(responseCode = "400", description = "Solicitud inválida (error de validación en los datos de entrada).")
     @PostMapping
-    public ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> create(@RequestBody PatientInDto dto) {
+    public ResponseEntity<PatientOutDto> create(@RequestBody PatientInDto dto, UriComponentsBuilder ucb ) {
+
         PatientOutDto created = patientService.create(dto);
-        return new ResponseEntity<>(new ApiRestTemplateResponse<>("Created", "Paciente creado", created), HttpStatus.CREATED);
+
+        URI locationUri = ucb.path("/patients/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+
+        return ResponseEntity
+                .created(locationUri)
+                .body(created);
     }
     @Operation(summary = "Actualizar Nombre", description = "Actualiza solo el campo 'name' del paciente.")
     @ApiResponse(responseCode = "200", description = "Nombre actualizado con éxito.")

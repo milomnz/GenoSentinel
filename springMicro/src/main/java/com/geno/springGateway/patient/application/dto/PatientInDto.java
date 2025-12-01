@@ -1,6 +1,8 @@
 package com.geno.springGateway.patient.application.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -9,7 +11,9 @@ import java.util.Date;
   * DTO de entrada utilizado para la creación de un paciente.
   * Contiene los datos necesarios para ser enviado al microservicio NestJS.
   */
-@Data
+ @Data
+ @AllArgsConstructor
+ @NoArgsConstructor
 @Schema(description = "DTO de entrada para crear/actualizar un paciente")
 
 public class PatientInDto {

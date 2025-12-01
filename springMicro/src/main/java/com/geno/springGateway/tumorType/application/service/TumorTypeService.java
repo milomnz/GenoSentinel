@@ -25,8 +25,8 @@ public class TumorTypeService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${nest.service.url}/tumor-types")
-    private String nestUrl;
+    @Value("${tumortype.service.base-url}")
+    private String tumorUrl;
 
     private HttpHeaders getCustomHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -40,7 +40,7 @@ public class TumorTypeService {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<List<TumorTypeOutDto>>> response = restTemplate.exchange(
-                nestUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
+                tumorUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -49,7 +49,7 @@ public class TumorTypeService {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<TumorTypeOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
+                tumorUrl + "/" + id, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -58,7 +58,7 @@ public class TumorTypeService {
         HttpEntity<TumorTypeInDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<TumorTypeOutDto>> response = restTemplate.exchange(
-                nestUrl, HttpMethod.POST, request, new ParameterizedTypeReference<>() {}
+                tumorUrl, HttpMethod.POST, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -72,7 +72,7 @@ public class TumorTypeService {
         HttpEntity<UpdateTumorTypeNameDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<TumorTypeOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
+                tumorUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -84,7 +84,7 @@ public class TumorTypeService {
         HttpEntity<UpdateTumorTypeSystemAffectedDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<TumorTypeOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
+                tumorUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -93,7 +93,7 @@ public class TumorTypeService {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.DELETE, entity, Void.class
+                tumorUrl + "/" + id, HttpMethod.DELETE, entity, Void.class
         );
     }
 }

@@ -1,6 +1,9 @@
 package com.geno.springGateway.tumorType.application.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
 
 public class TumorTypeOutDTO {
@@ -11,6 +14,8 @@ public class TumorTypeOutDTO {
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "DTO de salida con los datos del Tipo de Tumor")
 public class TumorTypeOutDto {
     @Schema(description = "Identificador único del tipo de tumor.", example = "10")

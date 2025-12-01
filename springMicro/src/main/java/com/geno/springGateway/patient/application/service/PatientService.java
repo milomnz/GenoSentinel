@@ -28,8 +28,8 @@ public class PatientService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${nest.service.url}/patients")
-    private String nestUrl;
+    @Value("${patient.service.base-url}")
+    private String patientUrl;
 
     /**
      * @return Headers personalizados para la solicitud (ej. Content-Type y X-Source).
@@ -41,13 +41,12 @@ public class PatientService {
         return headers;
     }
 
-    // --- MÉTODOS CRUD ---
 
     public List<PatientOutDto> findAll() {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<List<PatientOutDto>>> response = restTemplate.exchange(
-                nestUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
+                patientUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -58,7 +57,7 @@ public class PatientService {
         // Si Nest devuelve 404/400/500, ExternalServiceException se lanza automáticamente
         // y el GlobalExceptionHandler lo maneja.
         ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
+                patientUrl + "/" + id, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
         );
 
         // Verificación de lógica de negocio adicional si el cuerpo es 200 pero vacío
@@ -72,7 +71,7 @@ public class PatientService {
         HttpEntity<PatientInDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
         ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                nestUrl, HttpMethod.POST, request, new ParameterizedTypeReference<>() {}
+                patientUrl, HttpMethod.POST, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -85,7 +84,7 @@ public class PatientService {
 
         // La URL de NestJS debe aceptar este cuerpo con solo el campo 'name'.
         ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
+                patientUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -98,7 +97,7 @@ public class PatientService {
 
         // La URL de NestJS debe aceptar este cuerpo con solo el campo 'status'.
         ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
+                patientUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
         );
         return response.getBody().getData();
     }
@@ -107,7 +106,7 @@ public class PatientService {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
         restTemplate.exchange(
-                nestUrl + "/" + id, HttpMethod.DELETE, entity, Void.class
+                patientUrl + "/" + id, HttpMethod.DELETE, entity, Void.class
         );
     }
 }

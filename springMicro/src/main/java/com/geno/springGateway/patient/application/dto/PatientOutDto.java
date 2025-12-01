@@ -1,6 +1,9 @@
 package com.geno.springGateway.patient.application.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
 
@@ -11,6 +14,8 @@ import java.util.Date;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "DTO de salida con los datos completos del paciente")
 
 public class PatientOutDto {

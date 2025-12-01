@@ -2,7 +2,10 @@ package com.geno.springGateway.clinicalRecord.application.dto;
 import com.geno.springGateway.patient.application.dto.PatientOutDto;
 import com.geno.springGateway.tumorType.application.dto.TumorTypeOutDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +16,8 @@ import java.util.List;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "DTO de salida de Historia Clínica con objetos anidados (si Nest hace populate)")
 public class ClinicalRecordOutDto {
     @Schema(description = "Identificador único de la historia clínica.", example = "100")
