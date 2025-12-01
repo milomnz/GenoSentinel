@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, HttpCode, HttpStatus, Patch} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ClinicalRecordService } from '../services/clinicalRecord.service';
-import { CreateClinicalRecordDto } from '../dto/createandUpdate-clinicalRecord';
+import { CreateClinicalRecordDto } from '../dto/createclinicalRecord.dto';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
 import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';
 

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
@@ -6,7 +6,6 @@ import { CreateClinicalRecordDto } from '../dto/createclinicalRecord.dto';
 import { UpdateClinicalRecordDto } from '../dto/update-clinicalRecord';
 import { Patient } from '../../patient/entity/patient.entity';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
-
 /**
  * @author mendez
  * Endpoint controller for clinicalRecord entity
@@ -18,6 +17,8 @@ export class ClinicalRecordService {
         private clinicalRecordRepository: Repository<ClinicalRecord>,
         @InjectRepository(Patient)
         private patientRepository: Repository<Patient>,
+        @InjectRepository(TumorType)
+        private tumorTypeRepository: Repository<TumorType>,
     ) { }
 
     async findAll(): Promise<ClinicalRecord[]> {
@@ -33,7 +34,6 @@ export class ClinicalRecordService {
             relations: ['patient', 'tumorType']
         });
         if (!record) {
-            // Uso de backticks (`) para interpolación correcta
             throw new NotFoundException(`Clinical Record with ID ${id} not found`);
         }
         return record;
@@ -45,12 +45,16 @@ export class ClinicalRecordService {
         if (!patient) {
             throw new NotFoundException(`Patient with ID ${dto.idPatient} not found`);
         }
+        const tumorType = await this.tumorTypeRepository.findOneBy({ id: dto.idTumorType });
+        if (!tumorType) {
+            throw new NotFoundException(`Tumor Type with ID ${dto.idTumorType} not found`);
+        }
 
         // 2. Creamos la entidad
         // Asumimos que el DTO ahora tiene un campo "idTumorType" (singular, number)
         const newRecord = this.clinicalRecordRepository.create({
             patient: patient,
-            tumorType: dto.idTumorTypes,
+            tumorType : tumorType ,
             diagnosticDate: dto.diagnosticDate,
             stage: dto.stage,
             treatmentProtocol: dto.treatmentProtocol

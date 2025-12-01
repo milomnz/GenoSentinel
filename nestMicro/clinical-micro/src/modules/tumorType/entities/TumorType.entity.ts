@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, OneToOne} from 'typeorm';
 import { ClinicalRecord } from 'src/modules/clinicalRecord/entities/ClinicalRecord.entity';
 
-@Entity('tumor_type')
+@Entity('tumortype')
 export class TumorType{
     @PrimaryGeneratedColumn()
     id: number;

@@ -1,9 +1,9 @@
 import {Controller, Get, Post, Body, Param, ParseIntPipe, HttpCode, HttpStatus, Patch, Delete} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiOkResponse } from '@nestjs/swagger';
 import { TumorTypeService } from '../services/tumorType.service';
-import { CreateTumorTypeDto } from 'src/modules/tumorType/dto/createandUpdate-tumorType';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
-import { UpdateTumorTypeDto } from '../dto/update-tumorType';
+import { CreateTumorTypeDto } from '../dto/createTumorType.dto';
+import { UpdateTumorTypeDto } from '../dto/updateTumorType.dto';
 
 /**
  * @author mendez
