@@ -1,10 +1,16 @@
-import {Controller, Get, Post, Body, Param, ParseIntPipe, HttpCode, HttpStatus} from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, ParseIntPipe, HttpCode, HttpStatus, Patch, Delete} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiOkResponse } from '@nestjs/swagger';
 import { TumorTypeService } from '../services/tumorType.service';
-import { CreateTumorTypeDto } from 'src/modules/tumorType/dto/create-tumorType';
 import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
-import { stat } from 'fs';
+import { CreateTumorTypeDto } from '../dto/createTumorType.dto';
+import { UpdateTumorTypeDto } from '../dto/updateTumorType.dto';
 
+/**
+ * @author mendez
+ * Endpoint controller for tumorType entity
+ */
+
+@ApiTags('Tipos de Tumor')
 @Controller('tumor-types')
 export class TumorTypeController{
     constructor(private readonly tumorTypeService: TumorTypeService){}
@@ -65,8 +71,6 @@ export class TumorTypeController{
     findById(@Param('id', ParseIntPipe) id: number): Promise<TumorType>{
         return this.tumorTypeService.findById(id);
     }
-<<<<<<< Updated upstream
-=======
 
     @Patch(':id')
     @ApiOperation({
@@ -75,9 +79,9 @@ export class TumorTypeController{
     })
 
     @ApiParam({
-        name: 'id del tipo de tumor y DTO con los campos a actualizar',
+        name: 'id',
         description: 'ID numerico del tipo de tumor',
-        type: UpdateTumorTypeDto
+        type:Number
     })
 
     @ApiResponse({
@@ -118,6 +122,5 @@ export class TumorTypeController{
     delete(@Param('id', ParseIntPipe) id: number): Promise<void>{
         return this.tumorTypeService.delete(id);
     }
->>>>>>> Stashed changes
     
 }

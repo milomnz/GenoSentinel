@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { ClinicalRecord } from '../../clinicalRecord/entities/ClinicalRecord.entity';
 
 @Entity()
@@ -15,7 +15,7 @@ export class Patient {
     @Column({ type: 'date', nullable: false })
     birthDate: Date;
 
-    @Column({ length: 20, nullable: true })
+    @Column({ length: 1, nullable: true })
     gender: string;
 
     @Column({ length: 20, nullable: true })

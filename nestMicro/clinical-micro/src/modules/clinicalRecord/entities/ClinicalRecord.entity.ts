@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { Patient } from "../../patient/entity/patient.entity";
 import { TumorType } from "src/modules/tumorType/entities/TumorType.entity";
 
-@Entity('clinical_record')
+@Entity('clinicalrecord')
 export class ClinicalRecord {
 
     @PrimaryGeneratedColumn('increment')
@@ -10,19 +10,19 @@ export class ClinicalRecord {
 
     // Relación con Patient
     @ManyToOne(() => Patient, (patient) => patient.clinicalRecords, { nullable: false })
-    @JoinColumn({ name: 'id_patient' })
+    @JoinColumn({ name: 'idPatient' })
     patient: Patient;
 
-    @ManyToOne(() => TumorType) 
-    @JoinColumn({ name: 'id_tumor_type' })
+    @ManyToOne(() => TumorType)
+    @JoinColumn({ name: 'idTumorType' })
     tumorType: TumorType;
 
-    @Column({ type: 'date', name: 'diagnostic_date' })
+    @Column({ type: 'date', name: 'diagnosticDate' })
     diagnosticDate: Date;
 
     @Column({ length: 50 })
     stage: string;
 
-    @Column({ name: 'treatment_protocol', length: 230 })
+    @Column({ name: 'treatmentProtocol', length: 230 })
     treatmentProtocol: string;
 }

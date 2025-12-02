@@ -1,9 +1,14 @@
 import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, HttpCode, HttpStatus, Patch} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ClinicalRecordService } from '../services/clinicalRecord.service';
-import { CreateClinicalRecordDto } from '../dto/create-clinicalRecord';
+import { CreateClinicalRecordDto } from '../dto/createclinicalRecord.dto';
 import { ClinicalRecord } from '../entities/ClinicalRecord.entity';
 import { UpdateClinicalRecordDto } from '../dto/updateClinicalRecord.dto';
+
+/**
+ * @author mendez
+ * Endpoint controller for clinicalRecord entity
+ */
 
 @ApiTags('Reportes Clinicos')
 @Controller('clinical-records')

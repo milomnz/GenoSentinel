@@ -85,24 +85,14 @@ export class PatientService {
         if (!exists) {
             throw new NotFoundException(`Patient with ID ${id} not found`);
         }
-<<<<<<< Updated upstream
         await this.patientRepository.update(Number(id), { status }).then(() => { });
-=======
-        await this.patientRepository.update( id, { status : dto.status }).then(() => { });
->>>>>>> Stashed changes
     }
-
-    /** Elimina un paciente por su id
-     *  
-     * @param id
-     * @return Promise<void>
-    */
 
     async delete(id: number): Promise<void> {
         const exists = await this.patientRepository.findOneBy({ id });
         if (!exists) {
             throw new NotFoundException(`Patient with ID ${id} not found`);
         }
-        await this.patientRepository.delete(Number(id));
+        await this.patientRepository.delete(id);
     }
 }
