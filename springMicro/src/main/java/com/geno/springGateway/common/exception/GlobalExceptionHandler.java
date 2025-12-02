@@ -1,6 +1,6 @@
 package com.geno.springGateway.common.exception;
 import com.geno.springGateway.common.ApiRestTemplateResponse;
-import com.geno.springGateway.patient.domain.exceptions.PatientNotFoundException;
+import com.geno.springGateway.restTemplateNest.patient.domain.exceptions.PatientNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
