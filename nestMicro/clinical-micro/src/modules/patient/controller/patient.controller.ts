@@ -58,8 +58,8 @@ export class PatientController {
     type: Patient,
   })
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  create(@Body() Patient): Promise<Patient> {
-    return this.patientService.create(Patient);
+  create(@Body() CreatePatientDto): Promise<Patient> {
+    return this.patientService.create(CreatePatientDto);
   }
 
   @Patch('updatename/:id')
@@ -75,6 +75,7 @@ export class PatientController {
 
   @Patch('updatestatus/:id')
   @ApiOperation({ summary: 'Actualizar el estado del paciente' })
+  @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente', type : Patient})
   @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
   updateStatus(
     @Param('id', ParseIntPipe) id: number,

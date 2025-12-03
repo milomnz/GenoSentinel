@@ -1,16 +1,12 @@
 package com.geno.springGateway.restTemplateNest.clinicalRecord.infraestructure.controller;
-import com.geno.springGateway.restTemplateNest.clinicalRecord.application.dto.UpdateClinicalRecordStageDto;
-import com.geno.springGateway.restTemplateNest.clinicalRecord.application.dto.UpdateClinicalRecordTreatmentProtocolDto;
-import com.geno.springGateway.common.ApiRestTemplateResponse;
-import com.geno.springGateway.restTemplateNest.clinicalRecord.application.dto.ClinicalRecordInDto;
-import com.geno.springGateway.restTemplateNest.clinicalRecord.application.dto.ClinicalRecordOutDto;
+import com.geno.springGateway.restTemplateNest.clinicalRecord.application.dto.*;
 import com.geno.springGateway.restTemplateNest.clinicalRecord.application.service.ClinicalRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -18,13 +14,10 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Controlador REST para la gestión de Historias Clínicas.
- * Actúa como un *Gateway* para el microservicio de Historias Clínicas (NestJS),
- * manejando las peticiones HTTP y adaptando las respuestas.
- *
+ * Controlador REST que expone los endpoints para la gestión de Historias Clínicas.
+ * Actúa como pasarela (Gateway) para el microservicio de Historias Clínicas (NestJS).
  * @author mendez
  */
-
 @RestController
 @RequestMapping("/clinical-records")
 @RequiredArgsConstructor
@@ -33,70 +26,68 @@ public class ClinicalRecordController {
 
     private final ClinicalRecordService clinicalRecordService;
 
-    @Operation(summary = "Obtener por ID", description = "Busca una Historia Clínica específica.")
-    @ApiResponse(responseCode = "200", description = "Historia Clínica encontrada con éxito.")
-    @ApiResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> getById(@PathVariable Long id) {
-        ClinicalRecordOutDto dto = clinicalRecordService.findById(id);
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Historia Clínica encontrada", dto));
-    }
-
-    @Operation(summary = "Obtener lista", description = "Recupera todas las Historias Clínicas.")
+    @Operation(summary = "Obtener todas las Historias Clínicas", description = "Recupera todas las Historias Clínicas.")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
-    public ResponseEntity<ApiRestTemplateResponse<List<ClinicalRecordOutDto>>> getAll() {
-        List<ClinicalRecordOutDto> records = clinicalRecordService.findAll();
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Historias Clínicas encontradas", records));
+    public ResponseEntity<List<ClinicalRecordOutDto>> findAll() {
+        return ResponseEntity.ok(clinicalRecordService.findAll());
     }
 
-    @Operation(summary = "Crear nuevo", description = "Registra una nueva Historia Clínica.")
-    @ApiResponse(responseCode = "201", description = "Historia Clínica creada exitosamente.")
-    @ApiResponse(responseCode = "400", description = "Solicitud inválida (error de validación en los datos de entrada, ej. ID de paciente o tumor vacío).")
+    @Operation(summary = "Obtener Historia Clínica por ID", description = "Busca una Historia Clínica específica por su ID.")
+    @ApiResponse(responseCode = "200", description = "Encontrada con éxito.")
+    @ApiResponse(responseCode = "404", description = "No encontrada.")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<ClinicalRecordOutDto> getById(@PathVariable Long id) {
+        return clinicalRecordService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Crear nueva Historia Clínica", description = "Registra una nueva Historia Clínica.")
+    @ApiResponse(responseCode = "201", description = "Creada exitosamente.")
+    @ApiResponse(responseCode = "400", description = "Solicitud inválida.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ClinicalRecordOutDto> create(@RequestBody ClinicalRecordInDto dto, UriComponentsBuilder ucb) {
         ClinicalRecordOutDto created = clinicalRecordService.create(dto);
         URI locationUri = ucb.path("/clinical-records/{id}")
-                .buildAndExpand(created.getId()) // Asumiendo que getId() existe
+                .buildAndExpand(created.getId())
                 .toUri();
-
-        return ResponseEntity
-                .created(locationUri)
-                .body(created);
+        return ResponseEntity.created(locationUri).body(created);
     }
-    @Operation(summary = "Actualizar Etapa Clínica", description = "Actualiza solo el campo 'stage'.")
-    @ApiResponse(responseCode = "200", description = "Etapa Clínica actualizada con éxito.")
-    @ApiResponse(responseCode = "400", description = "Solicitud inválida (el campo está vacío o es nulo).")
-    @ApiResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
+
+    @Operation(summary = "Actualizar Etapa Clínica (PATCH)", description = "Actualiza solo el campo 'stage'.")
+    @ApiResponse(responseCode = "200", description = "Actualizada con éxito.")
+    @ApiResponse(responseCode = "404", description = "No encontrada.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/stage")
-    public ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> patchStage(
-            @PathVariable Long id,
-            @RequestBody UpdateClinicalRecordStageDto dto)
-    {
-        ClinicalRecordOutDto patched = clinicalRecordService.patchStage(id, dto);
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Etapa clínica actualizada", patched));
+    public ResponseEntity<UpdateClinicalRecordStageOutDto> patchStage(@PathVariable Long id,
+                                                           @RequestBody UpdateClinicalRecordStageDto dto) {
+        return clinicalRecordService.patchStage(id, dto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Actualizar Protocolo de Tratamiento", description = "Actualiza solo el campo 'treatmentProtocol'.")
-
-    @ApiResponse(responseCode = "200", description = "Protocolo de tratamiento actualizado con éxito.")
-    @ApiResponse(responseCode = "400", description = "Solicitud inválida (el campo está vacío o es nulo).")
-    @ApiResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
+    @Operation(summary = "Actualizar Protocolo de Tratamiento (PATCH)", description = "Actualiza solo el campo 'treatmentProtocol'.")
+    @ApiResponse(responseCode = "200", description = "Actualizado con éxito.")
+    @ApiResponse(responseCode = "404", description = "No encontrada.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/treatment-protocol")
-    public ResponseEntity<ApiRestTemplateResponse<ClinicalRecordOutDto>> patchTreatment(
-            @PathVariable Long id,
-            @RequestBody UpdateClinicalRecordTreatmentProtocolDto dto)
-    {
-        ClinicalRecordOutDto patched = clinicalRecordService.patchTreatment(id, dto);
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Protocolo de tratamiento actualizado", patched));
+    public ResponseEntity<UpdateClinicalRecordTreatmentProtocolOutDto> patchTreatment(@PathVariable Long id,
+                                                               @RequestBody UpdateClinicalRecordTreatmentProtocolDto dto) {
+        return clinicalRecordService.patchTreatment(id, dto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Eliminar", description = "Elimina una Historia Clínica por su ID.")
-    @ApiResponse(responseCode = "200", description = "Historia Clínica eliminada con éxito.")
-    @ApiResponse(responseCode = "404", description = "Historia Clínica no encontrada (ID no existe).")
-
+    @Operation(summary = "Eliminar Historia Clínica", description = "Elimina una Historia Clínica por su ID.")
+    @ApiResponse(responseCode = "204", description = "Eliminada con éxito.")
+    @ApiResponse(responseCode = "404", description = "No encontrada.")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiRestTemplateResponse<Void>> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         clinicalRecordService.delete(id);
-        return new ResponseEntity<>(new ApiRestTemplateResponse<>("Success", "Historia Clínica eliminada", null), HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 }

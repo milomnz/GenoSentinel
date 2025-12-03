@@ -1,4 +1,5 @@
 package com.geno.springGateway.restTemplateDjango.geneticVariant.aplication.dto;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,23 +7,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO de salida para la actualización parcial (PATCH) de una Variante Genética.
+ * Contiene el id y el campo que fue actualizado.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "DTO de salida de la Variante Genética (objeto anidado/poblado)")
+@Schema(description = "DTO de salida para el patch de Variante Genética")
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GeneticVariantOutDto {
-
-    @Schema(example = "200")
+public class GeneticVariantPatchOutDto {
+    @Schema(description = "Id de la variante genética que se actualizó")
     private Long id;
-    @Schema(example = "chr1")
-    private String chromosome;
-    @Schema(example = "15000000")
-    private Long position;
-    @Schema(example = "C")
-    private String referenceBase;
-    @Schema(example = "T")
-    private String alternateBase;
-    @Schema(example = "MODERATE")
+    
+    @Schema(example = "MODERATE", description = "Impacto de la variante genética actualizado.")
     private String impact;
 }
+

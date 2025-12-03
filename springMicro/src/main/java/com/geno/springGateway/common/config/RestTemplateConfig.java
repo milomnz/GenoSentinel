@@ -1,21 +1,21 @@
 package com.geno.springGateway.common.config;
-import com.geno.springGateway.common.exception.CustomRestResponseErrorHandler;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@RequiredArgsConstructor
 public class RestTemplateConfig {
-
-    private final CustomRestResponseErrorHandler customRestResponseErrorHandler; // Inyección
 
     @Bean
     public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        // Asigna el manejador de errores personalizado
-        restTemplate.setErrorHandler(customRestResponseErrorHandler);
-        return restTemplate;
+        // Creamos la fábrica de Apache HttpClient
+        HttpComponentsClientHttpRequestFactory requestFactory =
+                new HttpComponentsClientHttpRequestFactory();
+
+        requestFactory.setConnectTimeout(5000);
+
+        return new RestTemplate(requestFactory);
     }
 }

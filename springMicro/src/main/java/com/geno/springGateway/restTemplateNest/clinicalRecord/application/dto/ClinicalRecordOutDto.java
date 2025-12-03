@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ClinicalRecordOutDto {
     @Schema(description = "Lista de objetos completos de los Tipos de Tumor asociados.")
     private List<TumorTypeOutDto> tumorTypes;
     @Schema(description = "Fecha de diagnóstico.", example = "2006-03-13")
-    private Date diagnosticDate;
+    private LocalDate diagnosticDate;
     @Schema(description = "Etapa clínica del tumor.", example = "Stage II-A")
     private String stage;
     @Schema(description = "Protocolo de tratamiento.", example = "Quimioterapia + Radioterapia")

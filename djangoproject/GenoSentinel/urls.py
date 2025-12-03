@@ -24,7 +24,7 @@ urlpatterns = [
     path('genomicapi/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
     path('admin/', admin.site.urls),
-    path('genomicapi/gene', include('genosentinelapp.urls.geneUrls')),
-    path('genomicapi/geneticvariant', include('genosentinelapp.urls.geneticVariantUrls')),
+    path('genomicapi/gene/', include('genosentinelapp.urls.geneUrls')),
+    path('genomicapi/geneticvariant/', include('genosentinelapp.urls.geneticVariantUrls')),
     path('genomicapi/patientvariantreport/', include('genosentinelapp.urls.patientVariantReportUrls'))
 ]

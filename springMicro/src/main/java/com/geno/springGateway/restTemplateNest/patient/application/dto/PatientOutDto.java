@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -26,7 +27,7 @@ public class PatientOutDto {
     @Schema(description = "Apellido(s) del paciente.", example = "Mendez")
     private String lastName;
     @Schema(description = "Fecha de nacimiento (formato yyyy-MM-dd).", example = "2000-01-01")
-    private Date birthDate;
+    private LocalDate birthDate;
     @Schema(description = "Género del paciente.", example = "Femenino")
     private String gender;
     @Schema(description = "Estado actual del paciente.", example = "Activo")

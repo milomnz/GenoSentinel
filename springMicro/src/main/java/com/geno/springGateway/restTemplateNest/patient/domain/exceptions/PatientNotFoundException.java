@@ -1,19 +1,16 @@
 package com.geno.springGateway.restTemplateNest.patient.domain.exceptions;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Excepción lanzada cuando una entidad Paciente no se encuentra en el dominio
- * o cuando la respuesta de NestJS es lógicamente vacía (404).
- * Esta excepción es capturada por el GlobalExceptionHandler.
+ * Excepción de dominio lanzada cuando un Paciente no se encuentra (HTTP 404).
  */
-
-
-@Getter // Incluye getter para httpStatus
+@ResponseStatus(HttpStatus.NOT_FOUND) // Asegura que Spring maneje esta excepción como 404
 public class PatientNotFoundException extends RuntimeException {
-    private final HttpStatus httpStatus;
+
+    // Constructor que acepta solo el mensaje (ya existente)
     public PatientNotFoundException(String message) {
         super(message);
-        this.httpStatus = HttpStatus.NOT_FOUND;
     }
+
 }

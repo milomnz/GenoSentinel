@@ -2,14 +2,13 @@ package com.geno.springGateway.auth.infraestructure.controller;
 
 
 import com.geno.springGateway.auth.application.dto.RegisterRequest;
-import com.geno.springGateway.auth.application.service.JwtService;
+import com.geno.springGateway.auth.application.service.impl.JwtService;
 import com.geno.springGateway.user.entities.Rol;
 import com.geno.springGateway.user.entities.User;
 import com.geno.springGateway.user.infraestructure.repository.RolRepository;
 import com.geno.springGateway.user.infraestructure.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

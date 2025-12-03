@@ -18,5 +18,5 @@ public class UpdatePatientNameDto {
 
     @Schema(description = "Nuevo nombre del paciente", example = "Juana")
     @NotBlank(message = "El nombre no puede estar vacío.")
-    private String name;
+    private String firstName;
 }

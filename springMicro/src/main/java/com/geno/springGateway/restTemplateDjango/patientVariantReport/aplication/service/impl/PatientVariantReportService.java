@@ -1,7 +1,8 @@
-package com.geno.springGateway.restTemplateDjango.patientVariantReport.aplication.service;
+package com.geno.springGateway.restTemplateDjango.patientVariantReport.aplication.service.impl;
 
 import com.geno.springGateway.restTemplateDjango.patientVariantReport.aplication.dto.PatientVariantReportInDto;
 import com.geno.springGateway.restTemplateDjango.patientVariantReport.aplication.dto.PatientVariantReportOutDto;
+import com.geno.springGateway.restTemplateDjango.patientVariantReport.aplication.service.IPatientVariantReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import com.geno.springGateway.restTemplateDjango.patientVariantReport.domain.exceptions.PatientVariantReportNotFoundException;
 
 /**
@@ -25,14 +29,14 @@ import com.geno.springGateway.restTemplateDjango.patientVariantReport.domain.exc
  */
 @Service
 @RequiredArgsConstructor
-public class PatientVariantReportService {
+public class PatientVariantReportService implements IPatientVariantReportService {
     private final RestTemplate restTemplate;
 
     @Value("${patientvariantreport.service.base-url}")
     private String reportUrl;
 
     /**
-     * Define los headers personalizados (Content-Type y X-Source-System).
+     * Define los headers personalizados.
      */
     private HttpHeaders getCustomHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -41,44 +45,62 @@ public class PatientVariantReportService {
         return headers;
     }
 
-    public PatientVariantReportOutDto findById(Long id) {
+    private String buildUrl(Long id) {
+        // Aseguramos que no haya dobles slashes o faltantes
+        return String.format("%s/%d", reportUrl, id);
+    }
+
+    public Optional<PatientVariantReportOutDto> findById(Long id) {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
-        String urlWithId = reportUrl + "/" + id + "/";
+        System.out.println("URL ENVIADA: ");
+        System.out.println(buildUrl(id));
 
         try {
             ResponseEntity<PatientVariantReportOutDto> response = restTemplate.exchange(
-                    urlWithId,
+                    buildUrl(id),
                     HttpMethod.GET,
                     entity,
                     PatientVariantReportOutDto.class
             );
-            return response.getBody();
+            // Optional.ofNullable maneja si el body viene null aunque sea
+            return Optional.ofNullable(response.getBody());
+
         } catch (HttpClientErrorException.NotFound e) {
-            // Convierte el 404 de HTTP en una excepción de dominio
-            throw new PatientVariantReportNotFoundException("Reporte con ID " + id + " no encontrado en Django.");
+            // Si Django dice 404, nosotros devolvemos Empty para que el Controller decida.
+            return Optional.empty();
         }
     }
 
-    public List<PatientVariantReportOutDto> findAll() {
-        HttpHeaders headers = getCustomHeaders();
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-        // El array se usa para mapear la respuesta JSON de una lista
-        ResponseEntity<PatientVariantReportOutDto[]> response = restTemplate.exchange(
-                reportUrl + "/",
-                HttpMethod.GET,
-                entity,
-                PatientVariantReportOutDto[].class
-        );
-        return Arrays.asList(response.getBody());
+    public List<PatientVariantReportOutDto> findAll() {
+        HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
+        System.out.println("URL ENVIADA: ");
+        System.out.println(reportUrl);
+
+        try {
+            // Django suele requerir el slash final para listas
+            ResponseEntity<PatientVariantReportOutDto[]> response = restTemplate.exchange(
+                    reportUrl,
+                    HttpMethod.GET,
+                    entity,
+                    PatientVariantReportOutDto[].class
+            );
+
+            PatientVariantReportOutDto[] body = response.getBody();
+
+            // Retorno seguro: Si es null, devuelve lista vacía. Si hay datos, convierte a lista.
+            return body != null ? Arrays.asList(body) : Collections.emptyList();
+
+        } catch (HttpClientErrorException.NotFound e) {
+            // Si no hay registros y la API externa devuelve 404, retornamos lista vacía
+            return Collections.emptyList();
+        }
     }
 
     public PatientVariantReportOutDto create(PatientVariantReportInDto dto) {
         HttpEntity<PatientVariantReportInDto> request = new HttpEntity<>(dto, getCustomHeaders());
 
-        // Si Django devuelve 400 (por validación de patientId o variant FK),
-        // Spring lanzará HttpClientErrorException, que debe ser manejada
-        // por el @ControllerAdvice global.
+        // Dejamos que las excepciones de validación (400 Bad Request) suban al GlobalHandler
         ResponseEntity<PatientVariantReportOutDto> response = restTemplate.exchange(
                 reportUrl + "/",
                 HttpMethod.POST,
@@ -90,18 +112,16 @@ public class PatientVariantReportService {
 
     public void delete(Long id) {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
-        String urlWithId = reportUrl + "/" + id + "/";
-
+        String url = buildUrl(id) + "/";
         try {
             restTemplate.exchange(
-                    urlWithId,
+                    url,
                     HttpMethod.DELETE,
                     entity,
                     Void.class
             );
         } catch (HttpClientErrorException.NotFound e) {
-            throw new PatientVariantReportNotFoundException("Reporte con ID " + id + " no encontrado en Django para eliminar.");
+            throw new PatientVariantReportNotFoundException("Reporte con ID " + id + " no encontrado para eliminar.");
         }
     }
-
 }

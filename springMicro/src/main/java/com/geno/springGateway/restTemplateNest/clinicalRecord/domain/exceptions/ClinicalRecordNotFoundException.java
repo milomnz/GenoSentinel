@@ -1,19 +1,17 @@
 package com.geno.springGateway.restTemplateNest.clinicalRecord.domain.exceptions;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
-
-@Getter
-public class ClinicalRecordNotFoundException extends RuntimeException {
-    private final HttpStatus httpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
-  *  Excepción lanzada cuando una entidad Historia Clínica no se encuentra en el dominio
-  *  o cuando la respuesta del microservicio externo indica un 404.
-  *  Esta excepción encapsula el estado HTTP de error de negocio.
+ * Excepción de dominio lanzada cuando una Historia Clínica no se encuentra (HTTP 404).
  */
+@ResponseStatus(HttpStatus.NOT_FOUND) // Asegura que Spring maneje esta excepción como 404
+public class ClinicalRecordNotFoundException extends RuntimeException {
+
+    // Constructor que acepta solo el mensaje (probablemente el que ya tienes)
     public ClinicalRecordNotFoundException(String message) {
         super(message);
-        // Fijo el código HTTP para que el Global Handler sepa qué devolver al cliente.
-        this.httpStatus = HttpStatus.NOT_FOUND;
     }
+
+
 }

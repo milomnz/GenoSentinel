@@ -1,22 +1,21 @@
 package com.geno.springGateway.restTemplateNest.tumorType.infraestructure.controller;
-import com.geno.springGateway.common.ApiRestTemplateResponse;
-import com.geno.springGateway.restTemplateNest.tumorType.application.dto.TumorTypeInDto;
-import com.geno.springGateway.restTemplateNest.tumorType.application.dto.TumorTypeOutDto;
-import com.geno.springGateway.restTemplateNest.tumorType.application.dto.UpdateTumorTypeNameDto;
-import com.geno.springGateway.restTemplateNest.tumorType.application.dto.UpdateTumorTypeSystemAffectedDto;
 import com.geno.springGateway.restTemplateNest.tumorType.application.dto.*;
 import com.geno.springGateway.restTemplateNest.tumorType.application.service.TumorTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.net.URI;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 import java.util.List;
+
 /**
+ * Controlador REST para la gestión de Tipos de Tumor.
+ * Actúa como pasarela (Gateway) para el microservicio de Tipos de Tumor (NestJS).
  * @author mendez
  */
 @RestController
@@ -27,71 +26,71 @@ public class TumorTypeController {
 
     private final TumorTypeService tumorTypeService;
 
+    @Operation(summary = "Obtener lista", description = "Recupera todos los Tipos de Tumor.")
+    @ApiResponse(responseCode = "200", description = "Lista de tipos de tumor.")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping
+    public ResponseEntity<List<TumorTypeOutDto>> findAll() {
+        return ResponseEntity.ok(tumorTypeService.findAll());
+    }
+
     @Operation(summary = "Obtener por ID", description = "Busca un Tipo de Tumor específico.")
     @ApiResponse(responseCode = "200", description = "Tipo de tumor encontrado con éxito.")
     @ApiResponse(responseCode = "404", description = "Tipo de tumor no encontrado (ID no existe).")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiRestTemplateResponse<TumorTypeOutDto>> getById(@PathVariable Long id) {
-        TumorTypeOutDto dto = tumorTypeService.findById(id);
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Tipo de tumor encontrado", dto));
-    }
-
-    @Operation(summary = "Obtener lista", description = "Recupera todos los Tipos de Tumor.")
-    @GetMapping
-    public ResponseEntity<ApiRestTemplateResponse<List<TumorTypeOutDto>>> getAll() {
-        List<TumorTypeOutDto> tumors = tumorTypeService.findAll();
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Tipos de tumor encontrados", tumors));
+    public ResponseEntity<TumorTypeOutDto> getById(@PathVariable Long id) {
+        return tumorTypeService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Crear nuevo", description = "Registra un nuevo Tipo de Tumor.")
     @ApiResponse(responseCode = "201", description = "Tipo de tumor creado exitosamente.")
-    @ApiResponse(responseCode = "400", description = "Solicitud inválida (error de validación en los datos de entrada).")
+    @ApiResponse(responseCode = "400", description = "Solicitud inválida.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<TumorTypeOutDto> create(@RequestBody TumorTypeInDto dto, UriComponentsBuilder ucb) {
         TumorTypeOutDto created = tumorTypeService.create(dto);
         URI locationUri = ucb.path("/tumor-types/{id}")
                 .buildAndExpand(created.getId())
                 .toUri();
-        return ResponseEntity
-                .created(locationUri)
-                .body(created);
+        return ResponseEntity.created(locationUri).body(created);
     }
 
-
-    @Operation(summary = "Actualizar Nombre (Parcial)", description = "Actualiza solo el campo 'name' del Tipo de Tumor.")
+    @Operation(summary = "Actualizar Nombre (PATCH)", description = "Actualiza solo el campo 'name' del Tipo de Tumor.")
     @ApiResponse(responseCode = "200", description = "Nombre de tipo de tumor actualizado con éxito.")
-    @ApiResponse(responseCode = "400", description = "Solicitud inválida (el nombre está vacío o es nulo).")
-    @ApiResponse(responseCode = "404", description = "Tipo de tumor no encontrado (ID no existe).")
+    @ApiResponse(responseCode = "404", description = "Tipo de tumor no encontrado.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/name")
-    public ResponseEntity<ApiRestTemplateResponse<TumorTypeOutDto>> patchName( @PathVariable Long id, @RequestBody UpdateTumorTypeNameDto dto)
-    {
-        TumorTypeOutDto patched = tumorTypeService.patchName(id, dto);
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Nombre de tipo de tumor actualizado", patched));
+    public ResponseEntity<UpdateTumorTypeNameOutDto> patchName(
+            @PathVariable Long id,
+            @RequestBody UpdateTumorTypeNameDto dto) {
+        return tumorTypeService.patchName(id, dto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Actualizar Sistema Afectado (Parcial)", description = "Actualiza solo el campo 'systemAffected'.")
-
+    @Operation(summary = "Actualizar Sistema Afectado (PATCH)", description = "Actualiza solo el campo 'systemAffected'.")
     @ApiResponse(responseCode = "200", description = "Sistema afectado actualizado con éxito.")
-    @ApiResponse(responseCode = "400", description = "Solicitud inválida (el campo está vacío o es nulo).")
-    @ApiResponse(responseCode = "404", description = "Tipo de tumor no encontrado (ID no existe).")
-
-            @PatchMapping("/{id}/system-affected")
-    public ResponseEntity<ApiRestTemplateResponse<TumorTypeOutDto>> patchSystemAffected(
+    @ApiResponse(responseCode = "404", description = "Tipo de tumor no encontrado.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/system-affected")
+    public ResponseEntity<UpdateTumorTypeSystemAffectedOutDto> patchSystemAffected(
             @PathVariable Long id,
-            @RequestBody UpdateTumorTypeSystemAffectedDto dto)
-    {
-        TumorTypeOutDto patched = tumorTypeService.patchSystemAffected(id, dto);
-        return ResponseEntity.ok(new ApiRestTemplateResponse<>("Success", "Sistema afectado actualizado", patched));
+            @RequestBody UpdateTumorTypeSystemAffectedDto dto) {
+        return tumorTypeService.patchSystemAffected(id, dto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Eliminar", description = "Elimina un Tipo de Tumor por su ID.")
-            @ApiResponse(responseCode = "200", description = "Tipo de tumor eliminado con éxito.")
-            @ApiResponse(responseCode = "404", description = "Tipo de tumor no encontrado (ID no existe).")
-
+    @ApiResponse(responseCode = "204", description = "Tipo de tumor eliminado con éxito (No Content).")
+    @ApiResponse(responseCode = "404", description = "Tipo de tumor no encontrado.")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiRestTemplateResponse<Void>> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         tumorTypeService.delete(id);
-        return new ResponseEntity<>(new ApiRestTemplateResponse<>("Success", "Tipo de tumor eliminado", null), HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
-
 }

@@ -49,7 +49,12 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No se usan sesiones, cada petición se valida por sí sola
                 .authorizeHttpRequests(auth -> auth
                         // Permite el acceso sin autenticación a los endpoints de login y registro
-                        .requestMatchers("/auth/login", "/auth/register", "/GenoSentinelAuth-Api-Docs").permitAll()
+                        .requestMatchers("/auth/login", "/auth/register", "/GenoSentinelAuth-Api-Docs").permitAll()// Permitir acceso a la definición de la API (JSON)
+                        .requestMatchers("/GenoSentinelAuth-Api-Docs/**").permitAll()
+                        // Permitir acceso a la UI de Swagger (HTML, JS, CSS)
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // Permitir acceso a tu alias personalizado
+                        .requestMatchers("/apidocs").permitAll()
                         // El resto de endpoints requieren autenticación
                         .anyRequest().authenticated()
                 )

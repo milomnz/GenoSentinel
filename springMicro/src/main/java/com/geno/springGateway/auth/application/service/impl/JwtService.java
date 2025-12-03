@@ -1,4 +1,4 @@
-package com.geno.springGateway.auth.application.service;
+package com.geno.springGateway.auth.application.service.impl;
 
 
 import io.jsonwebtoken.Claims;

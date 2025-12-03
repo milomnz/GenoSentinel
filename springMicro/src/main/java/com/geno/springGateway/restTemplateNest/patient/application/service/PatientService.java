@@ -1,27 +1,31 @@
 package com.geno.springGateway.restTemplateNest.patient.application.service;
-
-import com.geno.springGateway.common.ApiRestTemplateResponse;
-import com.geno.springGateway.restTemplateNest.patient.application.dto.PatientInDto;
-import com.geno.springGateway.restTemplateNest.patient.application.dto.PatientOutDto;
-import com.geno.springGateway.restTemplateNest.patient.application.dto.UpdatePatientNameDto;
-import com.geno.springGateway.restTemplateNest.patient.application.dto.UpdatePatientStatusDto;
+import com.geno.springGateway.restTemplateNest.patient.application.dto.*;
 import com.geno.springGateway.restTemplateNest.patient.domain.exceptions.PatientNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Servicio que actúa como cliente REST para el microservicio de Pacientes (NestJS).
- * Implementa la lógica de comunicación HTTP a través de RestTemplate
- * y se encarga de manejar los DTOs de entrada y salida, delegando
- * el manejo de errores HTTP a la capa de Infraestructura/Configuración.
+ * Maneja las operaciones CRUD y la actualización parcial (PATCH),
+ * replicando la estructura de manejo de Optional y excepciones del GeneService.
+ *
  * @author mendez
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PatientService {
@@ -32,82 +36,135 @@ public class PatientService {
     private String patientUrl;
 
     /**
-     * @return Headers personalizados para la solicitud (ej. Content-Type y X-Source).
+     * Define los headers personalizados (Content-Type y X-Source-System).
      */
     private HttpHeaders getCustomHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("X-Source-System", "SpringGateway");
+        headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
 
+    public String buildUrl(Long id) {
+        return String.format("%s/%d", patientUrl, id);
+    }
 
-    public PatientOutDto findById(Long id) {
+    /**
+     * URL para operaciones PATCH específicas de este microservicio.
+     */
+    public String buildPatchUrl(Long id, String endpoint) {
+        return String.format("%s/%s/%d", patientUrl, endpoint, id);
+    }
+
+    public Optional<PatientOutDto> findById(Long id) {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
+        try {
+            ResponseEntity<PatientOutDto> response = restTemplate.exchange(
+                    buildUrl(id),
+                    HttpMethod.GET,
+                    entity,
+                    PatientOutDto.class
+            );
+            // Si no hay 404, devolvemos el cuerpo envuelto en Optional
+            return Optional.ofNullable(response.getBody());
 
-        // Si Nest devuelve 404/400/500, ExternalServiceException se lanza automáticamente
-        // y el GlobalExceptionHandler lo maneja.
-        ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                patientUrl + "/" + id, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
-        );
-
-        // Verificación de lógica de negocio adicional si el cuerpo es 200 pero vacío
-        if (response.getBody() == null || response.getBody().getData() == null) {
-            throw new PatientNotFoundException("Paciente con ID " + id + " no encontrado (Cuerpo vacío).");
+        } catch (HttpClientErrorException.NotFound e) {
+            // Manejamos 404 devolviendo Optional.empty()
+            return Optional.empty();
         }
-        return response.getBody().getData();
     }
 
     public List<PatientOutDto> findAll() {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
 
-        ResponseEntity<ApiRestTemplateResponse<List<PatientOutDto>>> response = restTemplate.exchange(
-                patientUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
-        );
-        return response.getBody().getData();
-    }
+        try {
+            // Usamos Array como en el ejemplo GeneService
+            ResponseEntity<PatientOutDto[]> response = restTemplate.exchange(
+                    patientUrl, HttpMethod.GET, entity, PatientOutDto[].class
+            );
 
+            PatientOutDto[] body = response.getBody();
+            // Si es null, devolvemos lista vacía, si no, convertimos
+            return body != null ? Arrays.asList(body) : Collections.emptyList();
+
+        } catch (HttpClientErrorException.NotFound e) {
+            return Collections.emptyList();
+        }
+    }
 
     public PatientOutDto create(PatientInDto dto) {
         HttpEntity<PatientInDto> request = new HttpEntity<>(dto, getCustomHeaders());
-
-        ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                patientUrl, HttpMethod.POST, request, new ParameterizedTypeReference<>() {}
+        ResponseEntity<PatientOutDto> response = restTemplate.exchange(
+                patientUrl,
+                HttpMethod.POST,
+                request,
+                PatientOutDto.class
         );
-        return response.getBody().getData();
+        return response.getBody();
     }
 
-    /**
-     * Actualiza el nombre del paciente.
-     */
-    public PatientOutDto patchName(Long id, UpdatePatientNameDto dto) {
+    public Optional<PatientOutDto> patchName(Long id, UpdatePatientNameDto dto) {
         HttpEntity<UpdatePatientNameDto> request = new HttpEntity<>(dto, getCustomHeaders());
+        String url = buildPatchUrl(id, "updatename");
+        log.debug(url);
+        try {
+            ResponseEntity<PatientOutDto> response = restTemplate.exchange(
+                    "http://localhost:3000/patients/updatestatus/"+ id,
+                    HttpMethod.PATCH,
+                    request,
+                    PatientOutDto.class
+            );
+            return Optional.ofNullable(response.getBody());
 
-        // La URL de NestJS debe aceptar este cuerpo con solo el campo 'name'.
-        ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                patientUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
-        );
-        return response.getBody().getData();
+        } catch (HttpClientErrorException.NotFound e) {
+            // Se lanza excepción de dominio, el controlador devolverá 404
+            throw new PatientNotFoundException("Paciente con ID: " + id + " no encontrado para actualizar nombre");
+        }
     }
 
-    /**
-     * Actualiza el estado del paciente.
-     */
-    public PatientOutDto patchStatus(Long id, UpdatePatientStatusDto dto) {
-        HttpEntity<UpdatePatientStatusDto> request = new HttpEntity<>(dto, getCustomHeaders());
+    // AQUI
 
-        // La URL de NestJS debe aceptar este cuerpo con solo el campo 'status'.
-        ResponseEntity<ApiRestTemplateResponse<PatientOutDto>> response = restTemplate.exchange(
-                patientUrl + "/" + id, HttpMethod.PATCH, request, new ParameterizedTypeReference<>() {}
-        );
-        return response.getBody().getData();
+    public Optional<UpdatePatientStatusOutDto> patchStatus(Long id, UpdatePatientStatusDto dto) {
+        HttpEntity<UpdatePatientStatusDto> request = new HttpEntity<>(dto, getCustomHeaders());
+        String fullUrl = buildPatchUrl(id, "updatestatus");
+
+        try {
+            // Hacemos la petición.
+            // Usamos Void.class porque sabemos que NestJS devuelve null y así evitamos confusiones
+            ResponseEntity<Void> response = restTemplate.exchange(
+                    fullUrl,
+                    HttpMethod.PATCH,
+                    request,
+                    Void.class
+            );
+
+            // Si es exitoso (200 o 204)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                UpdatePatientStatusOutDto dtoOut = new UpdatePatientStatusOutDto();
+                dtoOut.setId(id);
+                dtoOut.setStatus(dto.getStatus());
+                return Optional.of(dtoOut);
+            }
+
+            return Optional.empty();
+
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new PatientNotFoundException("Paciente con ID: " + id + " no encontrado para actualizar estado");
+        }
     }
 
     public void delete(Long id) {
         HttpEntity<Void> entity = new HttpEntity<>(getCustomHeaders());
-
-        restTemplate.exchange(
-                patientUrl + "/" + id, HttpMethod.DELETE, entity, Void.class
-        );
+        try {
+            restTemplate.exchange(
+                    buildUrl(id),
+                    HttpMethod.DELETE,
+                    entity,
+                    Void.class
+            );
+        } catch (HttpClientErrorException.NotFound e) {
+            // Lanzamos la excepción para que el GlobalExceptionHandler devuelva un 404
+            throw new PatientNotFoundException("Paciente con ID: " + id + " no encontrado para eliminar");
+        }
     }
 }

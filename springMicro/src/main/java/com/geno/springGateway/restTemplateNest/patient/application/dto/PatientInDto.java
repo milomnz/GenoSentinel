@@ -3,9 +3,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
-
+import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
  /**
   * DTO de entrada utilizado para la creación de un paciente.
@@ -17,14 +16,15 @@ import java.util.Date;
 @Schema(description = "DTO de entrada para crear/actualizar un paciente")
 
 public class PatientInDto {
-    @Schema(description = "Nombre(s) del paciente.", example = "Camy")
-    private String firstName;
-    @Schema(description = "Apellido(s) del paciente.", example = "Mendez")
-    private String lastName;
+     @Schema(description = "Nombre(s) del paciente.", example = "Camy")
+     private String firstName;
+     @Schema(description = "Apellido(s) del paciente.", example = "Mendez")
+     private String lastName;
      @Schema(description = "Fecha de nacimiento (formato yyyy-MM-dd).", example = "2000-01-01")
-    private Date birthDate;
+     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+     private LocalDate birthDate;
      @Schema(description = "Género del paciente.", example = "Femenino")
-    private String gender;
+     private String gender;
      @Schema(description = "Estado actual del paciente (Ej: Activo, Inactivo, Fallecido).", example = "Activo")
-    private String status;
+     private String status;
 }

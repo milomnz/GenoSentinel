@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Entity
-@Table(name = "User")
+@Table(name = "usuario")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
@@ -43,7 +43,7 @@ public class User implements UserDetails {
     )
     private Set<Rol> roles = new HashSet<>();
 
-    private Boolean active = Boolean.TRUE;
+    private Boolean activo = Boolean.TRUE;
 
 
     @Override
@@ -58,7 +58,7 @@ public class User implements UserDetails {
     @Override public boolean isAccountNonExpired() { return true; } // La cuenta nunca expira
     @Override public boolean isAccountNonLocked() { return true; } // La cuenta nunca se bloquea
     @Override public boolean isCredentialsNonExpired() { return true; } // Las credenciales nunca expiran
-    @Override public boolean isEnabled() { return active; } // El usuario está habilitado si activo es true
+    @Override public boolean isEnabled() { return activo; } // El usuario está habilitado si activo es true
 
 }
 
