@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from ..models.PatientVariantReport import PatientVariantReport
-from ..serializers.PatientVariantReportSerializer import PatientVariantReportSerializer
+from ..models.patient_variant_report import PatientVariantReport
+from ..serializers.patient_variant_report_serializer import PatientVariantReportSerializer
 
 @extend_schema_view(
     list=extend_schema(

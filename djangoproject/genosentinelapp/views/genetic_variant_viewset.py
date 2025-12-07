@@ -1,5 +1,5 @@
-from ..models.GeneticVariant import GeneticVariant
-from ..serializers.geneticVariantSerializer import GeneticVariantSerializer, GeneticVariantPatchDtoSerializer
+from ..models.genetic_variant import GeneticVariant
+from ..serializers.genetic_variant_serializer import GeneticVariantSerializer, GeneticVariantPatchDtoSerializer
 from rest_framework import viewsets 
 from drf_spectacular.utils import extend_schema, extend_schema_view
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models.GeneticVariant import GeneticVariant
+from ..models.genetic_variant import GeneticVariant
 
 class GeneticVariantSerializer(serializers.ModelSerializer):
     class Meta:

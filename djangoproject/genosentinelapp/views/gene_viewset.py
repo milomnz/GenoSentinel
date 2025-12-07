@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from ..models.Gene import Gene
-from ..serializers.geneSerializer import GeneSerializer, GenePatchDtoSerializer
+from ..models.gene import Gene
+from ..serializers.gene_serializer import GeneSerializer, GenePatchDtoSerializer
 
 @extend_schema_view(
     list=extend_schema(

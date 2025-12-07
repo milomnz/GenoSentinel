@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models.Gene import Gene
+from ..models.gene import Gene
 
 class GeneSerializer(serializers.ModelSerializer):
     class Meta:
