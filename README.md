@@ -49,29 +49,29 @@
                     ┌───────────────┼───────────────┐
                     │               │               │
                     ▼               ▼               ▼
-┌───────────────────────┐  ┌───────────────────────────────┐
-│  🏥 NESTJS            │  │  🧬 DJANGO                    │
-│  Microservicio Clínica│  │  Microservicio Genómica       │
-│     Puerto: 3000      │  │     Puerto: 8000              │
-│                       │  │                               │
-│  • Patient            │  │  • Gene                       │
-│  • ClinicalRecord     │  │  • GeneticVariant             │
-│  • TumorType          │  │  • PatientVariantReport       │
-│                       │  │                               │
-│  ORM: TypeORM         │  │  ORM: Django ORM              │
-└───────────┬───────────┘  └───────────────┬───────────────┘
-            │                              │
-            └──────────────┬───────────────┘
-                           ▼
-            ┌──────────────────────────────┐
-            │        🗄️ MySQL              │
-            │        Puerto: 3306          │
-            │                              │
-            │  ┌────────┐  ┌────────────┐  │
-            │  │Clinical│  │  Genomic   │  │
-            │  │  Data  │  │    Data    │  │
-            │  └────────┘  └────────────┘  │
-            └──────────────────────────────┘
+        ┌───────────────────────┐    ┌───────────────────────────────┐
+        │  🏥 NESTJS            │    │  🧬 DJANGO                    │
+        │  Microservicio Clínica│    │  Microservicio Genómica       │
+        │     Puerto: 3000      │    │     Puerto: 8000              │
+        │                       │    │                               │
+        │  • Patient            │ <--│  • Gene                       │
+        │  • ClinicalRecord     │    │  • GeneticVariant             │
+        │  • TumorType          │    │  • PatientVariantReport       │
+        │                       │    │                               │
+        │  ORM: TypeORM         │    │  ORM: Django ORM              │
+        └───────────┬───────────┘    └───────────────┬───────────────┘
+                    │                                │
+                    └──────────────┬─────────────────┘
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │        🗄️ MySQL              │
+                    │        Puerto: 3306          │
+                    │                              │
+                    │  ┌────────┐  ┌────────────┐  │
+                    │  │Clinical│  │  Genomic   │  │
+                    │  │  Data  │  │    Data    │  │
+                    │  └────────┘  └────────────┘  │
+                    └──────────────────────────────┘
 ```
 
 ---
