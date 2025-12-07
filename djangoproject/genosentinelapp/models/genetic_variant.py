@@ -1,5 +1,5 @@
 from django.db import models
-from .Gene import Gene
+from .gene import Gene
 
 
 class GeneticVariant(models.Model):

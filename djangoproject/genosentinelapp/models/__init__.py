@@ -1,6 +1,6 @@
-from .Gene import Gene
-from .GeneticVariant import GeneticVariant
-from .PatientVariantReport import PatientVariantReport
+from .gene import Gene
+from .genetic_variant import GeneticVariant
+from .patient_variant_report import PatientVariantReport
 
 __all__ = [
     'Gene',
