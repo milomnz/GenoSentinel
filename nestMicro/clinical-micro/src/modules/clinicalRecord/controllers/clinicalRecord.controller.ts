@@ -41,7 +41,7 @@ export class ClinicalRecordController{
 
     @ApiOperation({
         summary: 'Obtiene todos los registros clinicos',
-        description: 'Decuelve una lista de todos los registros clinicos, incluyendo los datos relacionados del paciente y tipo tumor'
+        description: 'Devuelve una lista de todos los registros clinicos, incluyendo los datos relacionados del paciente y tipo tumor'
 
     })
 
@@ -75,7 +75,7 @@ export class ClinicalRecordController{
     })
     @ApiResponse({
         status:404,
-        description: 'Regiatro clinico no encontrado'
+        description: 'Registro clinico no encontrado'
     })
     findById(@Param('id', ParseIntPipe) id:number): Promise<ClinicalRecord>{
         return this.clinicalRecordService.findById(id);

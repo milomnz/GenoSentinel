@@ -19,6 +19,7 @@ from '@nestjs/common';
 import { PatientService } from '../service/patient.service';
 import { Patient } from '../entity/patient.entity';
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { CreatePatientDto} from '../dto/createPatient.dto'
 
 @ApiTags('patients')
 @Controller('patients')
@@ -54,8 +55,8 @@ export class PatientController {
     type: Patient,
   })
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  create(@Body() Patient): Promise<Patient> {
-    return this.patientService.create(Patient);
+  create(@Body() createPatientDto: CreatePatientDto): Promise<Patient> {
+    return this.patientService.create(createPatientDto);
   }
 
   @Patch(':updatename/:id')

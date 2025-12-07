@@ -23,7 +23,7 @@ export class TumorTypeController{
     })
     @ApiResponse({
         status: 201,
-        description: 'El tipo de tumos ha sido creado exitosamente',
+        description: 'El tipo de tumor ha sido creado exitosamente',
         type: TumorType
     })
     @ApiResponse({
@@ -97,7 +97,7 @@ export class TumorTypeController{
 
     updatePartial(
         @Param('id', ParseIntPipe) id:number,
-        @Body()updateDto: UpdateTumorTypeDto): Promise<TumorType>{
+        @Body() updateDto: UpdateTumorTypeDto): Promise<TumorType>{
             return this.tumorTypeService.updatePartial(id, updateDto);
         
     }
