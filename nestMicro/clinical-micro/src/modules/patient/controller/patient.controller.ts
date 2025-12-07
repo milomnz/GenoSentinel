@@ -6,21 +6,23 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Delete,
   Body,
   Param,
   ParseIntPipe,
   HttpCode,
   HttpStatus,
-  Patch,
-} from '@nestjs/common';
+  Patch,} 
+  
+
+from '@nestjs/common';
 import { PatientService } from '../service/patient.service';
 import { Patient } from '../entity/patient.entity';
-import { CreatePatientDto } from '../dto/create-patient.dto';
-import { UpdatePatientNameDto } from '../dto/update-patient-name.dto';
-import { UpdatePatientStatusDto } from '../dto/update-patient-status.dto';
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { CreatePatientDto } from '../dto/createPatient.dto';
+import { UpdatePatientNameDto } from '../dto/updatePatientName.dto';
+import { UpdatePatientStatusDto } from '../dto/updatePatientStatus.dto';
+
 
 @ApiTags('patients')
 @Controller('patients')
@@ -56,32 +58,30 @@ export class PatientController {
     type: Patient,
   })
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  create(@Body() createPatientDto: CreatePatientDto): Promise<Patient> {
-    return this.patientService.create(createPatientDto);
+  create(@Body() CreatePatientDto): Promise<Patient> {
+    return this.patientService.create(CreatePatientDto);
   }
 
-  @Patch(':updatename/:id')
+  @Patch('updatename/:id')
   @ApiOperation({ summary: 'Actualizar el nombre del paciente' })
-  @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
-  @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente' })
+  @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente', type : Patient})
   @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
   updateName(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateNameDto: UpdatePatientNameDto,
   ): Promise<void> {
-    return this.patientService.updateName(id, updateNameDto.name);
+    return this.patientService.updateName(id, updateNameDto);
   }
 
-  @Patch(':updatestatus/:id')
+  @Patch('updatestatus/:id')
   @ApiOperation({ summary: 'Actualizar el estado del paciente' })
-  @ApiParam({ name: 'id', type: 'number', description: 'ID del paciente' })
-  @ApiResponse({ status: 200, description: 'Estado actualizado exitosamente' })
+  @ApiResponse({ status: 200, description: 'Nombre actualizado exitosamente', type : Patient})
   @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStatusDto: UpdatePatientStatusDto,
   ): Promise<void> {
-    return this.patientService.updateStatus(id, updateStatusDto.status);
+    return this.patientService.updateStatus(id, updateStatusDto);
   }
 
   @Delete(':id')

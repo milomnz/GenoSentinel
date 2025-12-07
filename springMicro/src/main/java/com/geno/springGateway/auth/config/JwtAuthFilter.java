@@ -1,7 +1,7 @@
 package com.geno.springGateway.auth.config;
 
 
-import com.geno.springGateway.auth.application.service.JwtService;
+import com.geno.springGateway.auth.application.service.impl.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

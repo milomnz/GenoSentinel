@@ -29,10 +29,9 @@ class GeneViewSet(viewsets.ModelViewSet):
     queryset = Gene.objects.all()
     serializer_class = GeneSerializer
     
-    # Asegúrate de que 'post' esté incluido aquí para que funcione
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
     def get_serializer_class(self):
         if self.action == 'partial_update':
             return GenePatchDtoSerializer
-        return super().get_serializer_class()
+        return GeneSerializer

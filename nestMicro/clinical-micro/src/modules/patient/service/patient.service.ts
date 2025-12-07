@@ -1,7 +1,7 @@
 /**
  * 
  * @author milomnz
- * Businnes logic for patient entity
+ * Logica de negocio para la entidad patient
  * 
  */
 import { Injectable } from '@nestjs/common';
@@ -9,6 +9,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Patient } from '../entity/patient.entity';
 import { NotFoundException } from '@nestjs/common';
+import { CreatePatientDto } from '../dto/createPatient.dto';
+import { UpdatePatientNameDto } from '../dto/updatePatientName.dto';
+import { UpdatePatientStatusDto } from '../dto/updatePatientStatus.dto';
+
 @Injectable()
 export class PatientService {
     constructor(
@@ -16,9 +20,23 @@ export class PatientService {
         private patientRepository: Repository<Patient>,
     ) { }
 
+
+    /** Retorna toda la lista de pacientes
+     * 
+     * Promise representa una lista de objetos Patient y que es una 
+     * funcion asincrona
+     * 
+     *  */    
     findAll(): Promise<Patient[]> {
         return this.patientRepository.find();
     }
+
+
+    /** Retorna un paciente por su id
+     * 
+     * @param id
+     * @return Promise<Patient>
+    */
     async findById(id: number): Promise<Patient> {
     const patient = await this.patientRepository.findOneBy({ id });
 
@@ -26,34 +44,51 @@ export class PatientService {
       throw new NotFoundException(`Patient with ID ${id} not found`);
         }
     return patient;
-
     }
 
-    create(patient: Patient): Promise<Patient> {
+    /** Crea un nuevo paciente
+     * 
+     * @param DTO de crear paciente
+     * @return Promise<Patient>
+     */
+    
+    create(patient: CreatePatientDto): Promise<Patient> {
         return this.patientRepository.save(patient);
     }
 
-    async updateName(id: number, firstName: string): Promise<void> {
+    /** Actualiza el nombre de un paciente
+     * 
+     * @param DTO de actualizar nombre de paciente
+     * @return Promise<void>
+     * */
+
+    async updateName(id: number ,dto : UpdatePatientNameDto): Promise<void> {
         const exists = await this.patientRepository.findOneBy({ id });
         if (!exists) {
-            throw new Error('Paciente no encontrado');
+            throw new NotFoundException(`Patient with ID ${id} not found`);
         }
-        await this.patientRepository.update(Number(id), { firstName }).then(() => { });
+        await this.patientRepository.update(id, { firstName : dto.firstName }).then(() => { });
     }
 
-    async updateStatus(id: number, status: string): Promise<void> {
+    /** Actualiza el estado de un paciente
+     * 
+     * @param DTO de actualizar estado de paciente
+     * @return Promise<void>
+     * */
+
+    async updateStatus(id : number, dto : UpdatePatientStatusDto): Promise<void> {
         const exists = await this.patientRepository.findOneBy({ id });
         if (!exists) {
-            throw new Error('Paciente no encontrado');
+            throw new NotFoundException(`Patient with ID ${id} not found`);
         }
-        await this.patientRepository.update(Number(id), { status }).then(() => { });
+        await this.patientRepository.update(id, { status : dto.status }).then(() => { });
     }
 
     async delete(id: number): Promise<void> {
         const exists = await this.patientRepository.findOneBy({ id });
         if (!exists) {
-            throw new Error('Paciente no encontrado');
+            throw new NotFoundException(`Patient with ID ${id} not found`);
         }
-        await this.patientRepository.delete(Number(id));
+        await this.patientRepository.delete(id);
     }
 }

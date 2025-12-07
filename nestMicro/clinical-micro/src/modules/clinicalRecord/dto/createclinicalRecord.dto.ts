@@ -1,41 +1,42 @@
-
-import { IsString, IsNotEmpty, IsNumberString, IsDateString, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumberString, IsDateString, IsArray, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { TumorType } from 'src/modules/tumorType/entities/TumorType.entity';
 
 
-export class CreateClinicalRecordDto{
- 
+export class CreateClinicalRecordDto {
+
   @ApiProperty({
-    description:'ID del paciente (Foreign Key)',
+    description: 'ID del paciente (Foreign Key)',
     example: '15'
   })
-  
+
   @IsNotEmpty()
-  @IsNumberString()
+  @IsNumber()
   idPatient: number;
 
 
   @ApiProperty({
-    description:'ID del tipo de tumor (Foreign Key)',
+    description: 'ID del tipo de tumor (Foreign Key)',
     example: [3, 4]
   })
   @IsNotEmpty()
-  idTumorTypes: number;
+  @IsNumber({}, { each: true })
+  idTumorType: number;
 
 
   @ApiProperty({
     description: 'Fecha del diagnostico',
     example: '2006-03-13'
   })
-     
+
   @IsNotEmpty()
   @IsDateString()
-    diagnosticDate : Date;
+  diagnosticDate: Date;
 
 
 
   @ApiProperty({
-    description:'Etapa clinica del tumor',
+    description: 'Etapa clinica del tumor',
     example: 'Stage II-A'
   })
   @IsString()
@@ -53,7 +54,7 @@ export class CreateClinicalRecordDto{
 
   @IsString()
   @IsNotEmpty()
-    treatmentProtocol: string;
+  treatmentProtocol: string;
 }
 
 
