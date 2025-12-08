@@ -1,0 +1,14 @@
+# Django Framework
+Django==5.2.8
+
+# Django REST Framework
+djangorestframework==3.15.2
+
+# OpenAPI/Swagger Documentation
+drf-spectacular==0.28.0
+
+# Environment Variables
+python-decouple==3.8
+
+# MySQL Database Connector
+mysqlclient==2.2.6

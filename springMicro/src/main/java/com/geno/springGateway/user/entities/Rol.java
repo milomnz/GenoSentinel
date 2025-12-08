@@ -18,6 +18,6 @@ public class Rol {
     @Column(name="id")
     private Long id;
 
-    @Column(nullable = false, name = "name")
+    @Column(nullable = false, name = "nombre")
     private String name;
 }
