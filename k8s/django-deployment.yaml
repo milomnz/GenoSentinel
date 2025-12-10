@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-genomic
+  namespace: genosentinel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-genomic
+  template:
+    metadata:
+      labels:
+        app: django-genomic
+    spec:
+      containers:
+        - name: django-genomic
+          image: genosentinel/django-genomic:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DEBUG
+              value: "False"
+            - name: SECRET_KEY
+              value: "django-k8s-secret-key-change-in-production"
+            - name: ALLOWED_HOSTS
+              value: "*"
+            - name: DB_NAME
+              value: "microdjango_db"
+            - name: DB_USER
+              value: "genouser"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-password
+            - name: DB_HOST
+              value: "mysql"
+            - name: DB_PORT
+              value: "3306"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          readinessProbe:
+            httpGet:
+              path: /genomicapi/gene/
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /genomicapi/gene/
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-genomic
+  namespace: genosentinel
+spec:
+  type: ClusterIP
+  selector:
+    app: django-genomic
+  ports:
+    - port: 8000
+      targetPort: 8000
+

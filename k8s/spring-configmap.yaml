@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-config
+  namespace: genosentinel
+data:
+  # URLs de microservicios internos en Kubernetes
+  PATIENT_SERVICE_URL: "http://nestjs-clinical:3000/patients"
+  CLINICAL_RECORD_SERVICE_URL: "http://nestjs-clinical:3000/clinicalrecord"
+  TUMOR_TYPE_SERVICE_URL: "http://nestjs-clinical:3000/tumortype"
+  GENE_SERVICE_URL: "http://django-genomic:8000/genomicapi/gene"
+  GENETIC_VARIANT_SERVICE_URL: "http://django-genomic:8000/genomicapi/geneticvariant"
+  PATIENT_VARIANT_REPORT_SERVICE_URL: "http://django-genomic:8000/genomicapi/patientvariantreport"
+

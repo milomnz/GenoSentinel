@@ -133,7 +133,7 @@ public class GeneService implements IGeneService {
             return Optional.empty();
 
         } catch (HttpClientErrorException.NotFound e) {
-            throw new GeneNotFoundException("Gen con ID: " + id + " no encontrado para actualizar");
+            return Optional.empty();
         }
     }
 

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+  namespace: genosentinel
+data:
+  init.sql: |
+    -- Crear las tres bases de datos
+    CREATE DATABASE IF NOT EXISTS microspring_db;
+    CREATE DATABASE IF NOT EXISTS micronest_db;
+    CREATE DATABASE IF NOT EXISTS microdjango_db;
+
+    -- Crear usuario y otorgar permisos en todas las bases de datos
+    CREATE USER IF NOT EXISTS 'genouser'@'%' IDENTIFIED BY 'genopass123';
+    
+    GRANT ALL PRIVILEGES ON microspring_db.* TO 'genouser'@'%';
+    GRANT ALL PRIVILEGES ON micronest_db.* TO 'genouser'@'%';
+    GRANT ALL PRIVILEGES ON microdjango_db.* TO 'genouser'@'%';
+    
+    FLUSH PRIVILEGES;
+

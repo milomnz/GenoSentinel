@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs-clinical
+  namespace: genosentinel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nestjs-clinical
+  template:
+    metadata:
+      labels:
+        app: nestjs-clinical
+    spec:
+      containers:
+        - name: nestjs-clinical
+          image: genosentinel/nestjs-clinical:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              value: "mysql"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USERNAME
+              value: "genouser"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-password
+            - name: DB_NAME
+              value: "micronest_db"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          readinessProbe:
+            httpGet:
+              path: /patients
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /patients
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nestjs-clinical
+  namespace: genosentinel
+spec:
+  type: ClusterIP
+  selector:
+    app: nestjs-clinical
+  ports:
+    - port: 3000
+      targetPort: 3000
+

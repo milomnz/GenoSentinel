@@ -1,10 +1,4 @@
 package com.geno.springGateway.common.config;
-<<<<<<< Updated upstream
-import com.geno.springGateway.common.exception.CustomRestResponseErrorHandler;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-=======
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -17,7 +11,6 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
->>>>>>> Stashed changes
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -33,19 +26,8 @@ import java.util.List;
  */
 @Slf4j
 @Configuration
-@RequiredArgsConstructor
 public class RestTemplateConfig {
 
-<<<<<<< Updated upstream
-    private final CustomRestResponseErrorHandler customRestResponseErrorHandler; // Inyección
-
-    @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        // Asigna el manejador de errores personalizado
-        restTemplate.setErrorHandler(customRestResponseErrorHandler);
-        return restTemplate;
-=======
     /**
      * RestTemplate configurado para Django (Python).
      * Serializa/deserializa JSON usando snake_case.
@@ -106,6 +88,5 @@ public class RestTemplateConfig {
                 new BufferingClientHttpRequestFactory(requestFactory);
         
         return new RestTemplate(bufferingFactory);
->>>>>>> Stashed changes
     }
 }

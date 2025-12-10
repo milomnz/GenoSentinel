@@ -9,4 +9,4 @@ class GeneSerializer(serializers.ModelSerializer):
 class GenePatchDtoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gene
-        fields = ['fullName', 'functionSummary']
+        fields = ['full_name', 'function_summary']
